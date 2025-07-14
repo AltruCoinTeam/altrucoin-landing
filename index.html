@@ -1,25 +1,42 @@
-
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="AltruCoin – The Token of Altruism on the Blockchain." />
   <meta property="og:title" content="AltruCoin" />
   <meta property="og:description" content="Every transaction supports real-world good." />
-  <meta property="og:image" content="/og-image.png" />
-  <link rel="icon" href="favicon.ico" />
+  <meta property="og:image" content="og-image.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://altrucoin.org" />
+  <meta name="theme-color" content="#00bfa6" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <title>AltruCoin – Token of Altruism</title>
+
   <style>
+    :root {
+      --primary: #00bfa6;
+      --background: #ffffff;
+      --text: #111111;
+      --muted: #f4f7f8;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #111;
+        --text: #eee;
+        --muted: #1e1e1e;
+      }
+    }
+    * {
+      transition: background 0.3s, color 0.3s;
+    }
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: #ffffff;
-      color: #111;
+      background: var(--background);
+      color: var(--text);
       line-height: 1.6;
     }
     header {
-      background: #00bfa6;
+      background: var(--primary);
       color: #fff;
       padding: 20px;
       text-align: center;
@@ -30,88 +47,78 @@
       text-decoration: none;
       font-weight: bold;
     }
-    section {
-      padding: 60px 20px;
-      max-width: 800px;
-      margin: auto;
+    .hero {
+      background: var(--muted);
+      padding: 80px 20px;
+      text-align: center;
+      animation: fadeIn 1.2s ease-in;
     }
-    h2 {
-      border-bottom: 2px solid #00bfa6;
-      padding-bottom: 10px;
+    .hero h1 {
+      font-size: 2.5em;
+      margin-bottom: 0.5em;
+    }
+    .hero p {
+      font-size: 1.2em;
+      margin-bottom: 1.5em;
     }
     .cta-button {
       display: inline-block;
-      margin-top: 20px;
       padding: 12px 24px;
-      background: #00bfa6;
+      background: var(--primary);
       color: #fff;
       border-radius: 8px;
       text-decoration: none;
       font-weight: bold;
+      animation: bounce 2s infinite;
+    }
+    section {
+      padding: 60px 20px;
+      max-width: 900px;
+      margin: auto;
+      animation: fadeInUp 1s ease-in;
+    }
+    section:nth-child(even) {
+      background: var(--muted);
+    }
+    h2 {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    .tokenomics {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+    .tokenomics div {
+      background: #e3faf7;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 10px;
+      width: 220px;
+      text-align: center;
     }
     footer {
-      background: #f9f9f9;
-      padding: 40px;
+      background: #222;
+      color: #ccc;
       text-align: center;
+      padding: 40px;
       font-size: 0.9em;
-      color: #777;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
     }
   </style>
 </head>
-<body>
-  <header>
-    <h1>AltruCoin</h1>
-    <nav>
-      <a href="#about">About</a>
-      <a href="#how">How It Works</a>
-      <a href="#community">Community</a>
-      <a href="#whitelist">Whitelist</a>
-      <a href="#roadmap">Roadmap</a>
-    </nav>
-  </header>
-
-  <section id="about">
-    <h2>About</h2>
-    <p>AltruCoin is a decentralized cryptocurrency on BNB Smart Chain. Every transaction helps real people, animals, and the planet through automated, transparent donations.</p>
-  </section>
-
-  <section id="how">
-    <h2>How It Works</h2>
-    <ul>
-      <li>5% transaction tax</li>
-      <li>3% to verified charities (in USDT)</li>
-      <li>2% to liquidity and growth</li>
-      <li>DAO voting for choosing causes</li>
-    </ul>
-  </section>
-
-  <section id="community">
-    <h2>Community</h2>
-    <p>
-      Join us on Telegram:<br />
-      <a href="https://t.me/AltrucoinChat">💬 Community Chat</a><br />
-      <a href="https://t.me/AltrucoinGroup">📢 Project Updates</a>
-    </p>
-  </section>
-
-  <section id="whitelist">
-    <h2>Whitelist</h2>
-    <p>Get early access to ALTRU token and launch bonuses.</p>
-    <a class="cta-button" href="https://forms.gle/3kjxXr7byU54o8E46" target="_blank">Join Whitelist</a>
-  </section>
-
-  <section id="roadmap">
-    <h2>Roadmap</h2>
-    <ul>
-      <li>✅ Token launch on BNB Chain</li>
-      <li>🚀 Listing on PancakeSwap</li>
-      <li>🛠 DAO setup and charity dashboard</li>
-      <li>🏛 Legal foundation in Dubai</li>
-    </ul>
-  </section>
-
-  <footer>
-    &copy; 2025 AltruCoin. Built with purpose.
-  </footer>
-</body>
-</html>
