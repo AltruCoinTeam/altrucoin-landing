@@ -10,6 +10,10 @@
   <meta name="theme-color" content="#00bfa6" />
   <link rel="icon" href="favicon.ico" />
   <title>AltruCoin – Token of Altruism</title>
+
+  <!-- AOS animation CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
@@ -124,6 +128,20 @@
   </style>
 </head>
 <body>
+  <!-- Preloader -->
+  <div id="preloader" style="position: fixed; width: 100%; height: 100%; background: #181c2f; color: white; display: flex; align-items: center; justify-content: center; font-family: Inter, sans-serif; font-size: 1.5rem; z-index: 9999;">
+    <div>
+      <img src="favicon.ico" alt="Logo" style="width: 40px; height: 40px; vertical-align: middle; margin-right: 10px;">
+      Loading AltruCoin...
+    </div>
+  </div>
+  <script>
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('preloader');
+      if (loader) loader.style.display = 'none';
+    });
+  </script>
+
   <header>
     <nav>
       <a href="#about">About</a>
@@ -134,32 +152,24 @@
     </nav>
   </header>
 
-  <section class="hero">
+  <section class="hero" data-aos="fade-up">
     <h1>AltruCoin</h1>
     <p>The Web3 Token of Altruism. Every transaction helps real people, animals, and the planet — transparently and on-chain.</p>
     <a class="cta-button" href="#community">Join Whitelist</a>
   </section>
 
-  <section id="about">
+  <section id="about" data-aos="fade-up">
     <h2>About</h2>
-    <p>
-      AltruCoin is a Web3-powered cryptocurrency with a mission: to turn market activity into meaningful charitable impact.
-      Every time someone buys or sells the token, a small trading fee is collected. At the end of each month, the total collected fees are transparently distributed across three areas:
-    </p>
+    <p>AltruCoin is a Web3-powered cryptocurrency with a mission: to turn market activity into meaningful charitable impact.</p>
     <ul>
       <li><strong>50%</strong> — to verified charities (in USDT)</li>
       <li><strong>25%</strong> — for project development and audits</li>
       <li><strong>25%</strong> — for token buyback (if feasible)</li>
     </ul>
-    <p>
-      AltruCoin is built on the BNB Smart Chain for low fees and speed. Token holders are not just investors — they are active participants in a transparent, decentralized ecosystem for good. Through DAO voting, the community helps decide where the donations go each month.
-    </p>
-    <p>
-      With plans to establish a registered foundation in the UAE and to launch a public dashboard (AltruScan), AltruCoin aims to lead the way in blockchain-driven philanthropy.
-    </p>
+    <p>Built on BNB Smart Chain for low fees and speed. DAO governance empowers holders to vote on donations. Plans include a registered UAE foundation and the AltruScan dashboard.</p>
   </section>
 
-  <section id="tokenomics">
+  <section id="tokenomics" data-aos="fade-up">
     <h2>Tokenomics</h2>
     <p>All trading fee revenue is distributed monthly as follows:</p>
     <div class="tokenomics">
@@ -177,7 +187,7 @@
     </div>
   </section>
 
-  <section id="roadmap">
+  <section id="roadmap" data-aos="fade-up">
     <h2>Roadmap</h2>
     <ul>
       <li>✅ Token launch</li>
@@ -188,7 +198,7 @@
     </ul>
   </section>
 
-  <section id="community">
+  <section id="community" data-aos="fade-up">
     <h2>Community</h2>
     <p style="margin-bottom: 1rem;">
       Join our growing movement and connect with others who believe in blockchain-powered altruism.
@@ -200,7 +210,7 @@
     </div>
   </section>
 
-  <section id="faq">
+  <section id="faq" data-aos="fade-up">
     <h2>FAQ</h2>
     <ul>
       <li><strong>What is AltruCoin?</strong><br/>
@@ -226,5 +236,9 @@
   <footer>
     &copy; 2025 AltruCoin — Built with purpose. Powered by people.
   </footer>
+
+  <!-- AOS animation JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init();</script>
 </body>
 </html>
