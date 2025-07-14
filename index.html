@@ -198,17 +198,52 @@
     </ul>
   </section>
 
-  <section id="community" data-aos="fade-up">
-    <h2>Community</h2>
-    <p style="margin-bottom: 1rem;">
-      Join our growing movement and connect with others who believe in blockchain-powered altruism.
-    </p>
-    <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
-      <a class="cta-button" href="https://t.me/AltrucoinGroup" target="_blank">📢 Telegram Channel</a>
-      <a class="cta-button" href="https://t.me/AltrucoinChat" target="_blank">💬 Telegram Chat</a>
-      <a class="cta-button" href="https://forms.gle/3kjxXr7byU54o8E46" target="_blank">📝 Join Whitelist</a>
-    </div>
-  </section>
+ <section id="community" data-aos="fade-up">
+  <h2>Community</h2>
+  <p style="margin-bottom: 1rem;">
+    Join our growing movement and connect with others who believe in blockchain-powered altruism.
+  </p>
+  <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+    <a class="cta-button" href="https://t.me/AltrucoinGroup" target="_blank">📢 Telegram Channel</a>
+    <a class="cta-button" href="https://t.me/AltrucoinChat" target="_blank">💬 Telegram Chat</a>
+    <a class="cta-button" href="https://forms.gle/3kjxXr7byU54o8E46" target="_blank">📝 Join Whitelist</a>
+  </div>
+
+  <!-- MetaMask Button -->
+  <div style="text-align: center; margin-top: 40px;">
+    <button onclick="addToken()" class="cta-button">
+      🦊 Add $ALTRU to MetaMask
+    </button>
+  </div>
+</section>
+
+<!-- MetaMask Script -->
+<script>
+  async function addToken() {
+    try {
+      const wasAdded = await window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: {
+            address: '0x7c734036c3C194d62CB5fADba8F93cCB85E0E0f4',
+            symbol: 'ALTRU',
+            decimals: 18,
+            image: 'https://altrucoin.org/favicon.ico'
+          },
+        },
+      });
+
+      if (wasAdded) {
+        console.log('ALTRU added to MetaMask');
+      } else {
+        console.log('User rejected the request');
+      }
+    } catch (error) {
+      console.error('MetaMask error:', error);
+    }
+  }
+</script>
 
   <section id="faq" data-aos="fade-up">
     <h2>FAQ</h2>
