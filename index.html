@@ -16,9 +16,9 @@
     :root {
       --primary: #00c2ff;
       --secondary: #7d00ff;
-      --background: #0f0f1a;
+      --background: #181c2f;
       --text: #ffffff;
-      --muted: rgba(255, 255, 255, 0.05);
+      --muted: rgba(255, 255, 255, 0.08);
     }
 
     * {
@@ -94,12 +94,13 @@
       padding-bottom: 8px;
     }
 
-    .tokenomics, .roadmap ul {
+    .tokenomics {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
       list-style: none;
       padding: 0;
+      justify-content: center;
     }
 
     .tokenomics div {
@@ -115,6 +116,10 @@
       padding: 40px;
       background: #111;
       color: #aaa;
+    }
+
+    ul {
+      padding-left: 1.2rem;
     }
   </style>
 </head>
@@ -137,18 +142,38 @@
 
   <section id="about">
     <h2>About</h2>
-    <p>AltruCoin is a decentralized cryptocurrency on BNB Smart Chain. Every transaction helps fund charity transparently and automatically — with 3% of all trading volume going to real causes.</p>
+    <p>
+      AltruCoin is a Web3-powered cryptocurrency with a mission: to turn market activity into meaningful charitable impact.
+      Every time someone buys or sells the token, a small trading fee is collected. At the end of each month, the total collected fees are transparently distributed across three areas:
+    </p>
+    <ul>
+      <li><strong>50%</strong> — to verified charities (in USDT)</li>
+      <li><strong>25%</strong> — for project development and audits</li>
+      <li><strong>25%</strong> — for token buyback (if feasible)</li>
+    </ul>
+    <p>
+      AltruCoin is built on the BNB Smart Chain for low fees and speed. Token holders are not just investors — they are active participants in a transparent, decentralized ecosystem for good. Through DAO voting, the community helps decide where the donations go each month.
+    </p>
+    <p>
+      With plans to establish a registered foundation in the UAE and to launch a public dashboard (AltruScan), AltruCoin aims to lead the way in blockchain-driven philanthropy.
+    </p>
   </section>
 
   <section id="tokenomics">
     <h2>Tokenomics</h2>
+    <p>All trading fee revenue is distributed monthly as follows:</p>
     <div class="tokenomics">
-      <div><strong>3%</strong><br/>Charity Wallet</div>
-      <div><strong>2%</strong><br/>Liquidity + Dev</div>
-      <div><strong>20%</strong><br/>Pre-sale</div>
+      <div><strong>50%</strong><br/>Charity (in USDT)</div>
+      <div><strong>25%</strong><br/>Project & Ops</div>
+      <div><strong>25%</strong><br/>Token Buyback</div>
+    </div>
+
+    <p style="margin-top:2rem;">Token allocation:</p>
+    <div class="tokenomics">
+      <div><strong>20%</strong><br/>Whitelist Sale</div>
       <div><strong>30%</strong><br/>Public Launch</div>
-      <div><strong>10%</strong><br/>Team (Vested)</div>
-      <div><strong>35%</strong><br/>Ecosystem & Reserve</div>
+      <div><strong>10%</strong><br/>Team (vested)</div>
+      <div><strong>40%</strong><br/>Reserve & Ecosystem</div>
     </div>
   </section>
 
@@ -159,28 +184,47 @@
       <li>🚀 PancakeSwap listing</li>
       <li>🗳 DAO setup</li>
       <li>📊 Charity dashboard</li>
-      <li>🏛 Foundation in UAE</li>
+      <li>🏛 UAE foundation</li>
     </ul>
   </section>
 
   <section id="community">
     <h2>Community</h2>
-    <p>Join us and take part in the mission:</p>
-    <p><a href="https://t.me/AltrucoinChat">💬 Telegram Chat</a> | <a href="https://t.me/AltrucoinGroup">📢 Announcements</a></p>
-    <p><a class="cta-button" href="https://forms.gle/3kjxXr7byU54o8E46" target="_blank">Whitelist Signup</a></p>
+    <p style="margin-bottom: 1rem;">
+      Join our growing movement and connect with others who believe in blockchain-powered altruism.
+    </p>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+      <a class="cta-button" href="https://t.me/AltrucoinGroup" target="_blank">📢 Telegram Channel</a>
+      <a class="cta-button" href="https://t.me/AltrucoinChat" target="_blank">💬 Telegram Chat</a>
+      <a class="cta-button" href="https://forms.gle/3kjxXr7byU54o8E46" target="_blank">📝 Join Whitelist</a>
+    </div>
   </section>
 
   <section id="faq">
     <h2>FAQ</h2>
     <ul>
-      <li><strong>Is AltruCoin safe?</strong> Yes — the contract is public and verifiable.</li>
-      <li><strong>Where do funds go?</strong> To real charitable causes in USDT.</li>
-      <li><strong>Can I vote?</strong> Yes — DAO governance is enabled.</li>
+      <li><strong>What is AltruCoin?</strong><br/>
+        AltruCoin is a cryptocurrency built to support charitable initiatives. A portion of every trade is collected as a fee, which is accumulated and distributed monthly: to verified charities, project operations, and token buyback.
+      </li>
+      <li><strong>How are the funds distributed?</strong><br/>
+        100% of trading fee revenue is split monthly as follows:
+        <ul>
+          <li>50% — to charity (in USDT)</li>
+          <li>25% — to project development and operations</li>
+          <li>25% — to token buyback (if feasible)</li>
+        </ul>
+      </li>
+      <li><strong>Is this project safe?</strong><br/>The token contract is open, verifiable, and will be audited.</li>
+      <li><strong>How are donations managed?</strong><br/>Funds are distributed manually at the end of each month to verified charity wallets.</li>
+      <li><strong>Who decides which charities are supported?</strong><br/>The AltruCoin DAO — token holders vote via governance.</li>
+      <li><strong>How can I participate?</strong><br/>Hold $ALTRU, vote, spread the word, and join the mission.</li>
+      <li><strong>Where can I track donations?</strong><br/>Through the AltruScan dashboard (coming soon).</li>
+      <li><strong>What are the benefits for holders?</strong><br/>Governance rights, community access, and upside potential.</li>
     </ul>
   </section>
 
   <footer>
-    &copy; 2025 AltruCoin. Powered by purpose.
+    &copy; 2025 AltruCoin — Built with purpose. Powered by people.
   </footer>
 </body>
 </html>
