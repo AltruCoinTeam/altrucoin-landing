@@ -7,201 +7,180 @@
   <meta property="og:title" content="AltruCoin" />
   <meta property="og:description" content="Every transaction supports real-world good." />
   <meta property="og:image" content="og-image.png" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://altrucoin.org" />
   <meta name="theme-color" content="#00bfa6" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" />
   <title>AltruCoin – Token of Altruism</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
     :root {
-      --primary: #00bfa6;
-      --background: #ffffff;
-      --text: #111111;
-      --muted: #f4f7f8;
+      --primary: #00c2ff;
+      --secondary: #7d00ff;
+      --background: #0f0f1a;
+      --text: #ffffff;
+      --muted: rgba(255, 255, 255, 0.05);
     }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --background: #111;
-        --text: #eee;
-        --muted: #1e1e1e;
-      }
-    }
+
     * {
-      transition: background 0.3s, color 0.3s;
-    }
-    body {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
       font-family: 'Inter', sans-serif;
       background: var(--background);
       color: var(--text);
-      line-height: 1.6;
     }
+
     header {
-      background: var(--primary);
-      color: #fff;
-      padding: 20px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 1.5rem;
       text-align: center;
     }
+
     nav a {
       color: white;
-      margin: 0 10px;
+      margin: 0 12px;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 600;
     }
+
     .hero {
-      background: var(--muted);
-      padding: 80px 20px;
+      padding: 100px 20px;
       text-align: center;
-      animation: fadeIn 1.2s ease-in;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
     }
+
     .hero h1 {
-      font-size: 2.5em;
-      margin-bottom: 0.5em;
+      font-size: 3rem;
+      margin-bottom: 1rem;
     }
+
     .hero p {
-      font-size: 1.2em;
-      margin-bottom: 1.5em;
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto 2rem;
     }
+
     .cta-button {
       display: inline-block;
-      padding: 12px 24px;
-      background: var(--primary);
+      padding: 0.75rem 1.5rem;
+      background: var(--muted);
+      border: 2px solid #fff;
+      border-radius: 12px;
       color: #fff;
-      border-radius: 8px;
+      font-weight: 700;
       text-decoration: none;
-      font-weight: bold;
-      animation: bounce 2s infinite;
+      transition: background 0.3s, transform 0.3s;
     }
+
+    .cta-button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
     section {
       padding: 60px 20px;
       max-width: 900px;
       margin: auto;
-      animation: fadeInUp 1s ease-in;
-    }
-    section:nth-child(even) {
-      background: var(--muted);
-    }
-    h2 {
-      border-bottom: 2px solid var(--primary);
-      padding-bottom: 10px;
-    }
-    ul {
-      padding-left: 20px;
-    }
-    .tokenomics {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-    }
-    .tokenomics div {
-      background: #e3faf7;
-      border-radius: 8px;
-      padding: 20px;
-      margin: 10px;
-      width: 220px;
-      text-align: center;
-    }
-    footer {
-      background: #222;
-      color: #ccc;
-      text-align: center;
-      padding: 40px;
-      font-size: 0.9em;
     }
 
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
+    section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 8px;
     }
-    @keyframes fadeInUp {
-      0% { opacity: 0; transform: translateY(30px); }
-      100% { opacity: 1; transform: translateY(0); }
+
+    .tokenomics, .roadmap ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      list-style: none;
+      padding: 0;
     }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
+
+    .tokenomics div {
+      background: var(--muted);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      flex: 1 1 220px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      background: #111;
+      color: #aaa;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>AltruCoin</h1>
     <nav>
       <a href="#about">About</a>
-      <a href="#how">How It Works</a>
       <a href="#tokenomics">Tokenomics</a>
       <a href="#roadmap">Roadmap</a>
       <a href="#community">Community</a>
       <a href="#faq">FAQ</a>
     </nav>
   </header>
-  <div class="hero">
-    <h1>The Token of Altruism</h1>
-    <p>Every transaction helps real people, animals, and the planet. Join the movement.</p>
-    <a class="cta-button" href="#whitelist">Join Whitelist</a>
-  </div>
+
+  <section class="hero">
+    <h1>AltruCoin</h1>
+    <p>The Web3 Token of Altruism. Every transaction helps real people, animals, and the planet — transparently and on-chain.</p>
+    <a class="cta-button" href="#community">Join Whitelist</a>
+  </section>
+
   <section id="about">
-  <h2>About</h2>
-  <p>AltruCoin is a decentralized cryptocurrency on BNB Smart Chain. Every transaction funds charitable initiatives in real-time through automated, transparent donations. Built for impact.</p>
-</section>
+    <h2>About</h2>
+    <p>AltruCoin is a decentralized cryptocurrency on BNB Smart Chain. Every transaction helps fund charity transparently and automatically — with 3% of all trading volume going to real causes.</p>
+  </section>
 
-<section id="how">
-  <h2>How It Works</h2>
-  <ul>
-    <li>5% transaction tax</li>
-    <li>3% to verified charities (in USDT)</li>
-    <li>2% to liquidity and development</li>
-    <li>DAO voting to choose causes</li>
-  </ul>
-</section>
+  <section id="tokenomics">
+    <h2>Tokenomics</h2>
+    <div class="tokenomics">
+      <div><strong>3%</strong><br/>Charity Wallet</div>
+      <div><strong>2%</strong><br/>Liquidity + Dev</div>
+      <div><strong>20%</strong><br/>Pre-sale</div>
+      <div><strong>30%</strong><br/>Public Launch</div>
+      <div><strong>10%</strong><br/>Team (Vested)</div>
+      <div><strong>35%</strong><br/>Ecosystem & Reserve</div>
+    </div>
+  </section>
 
-<section id="tokenomics">
-  <h2>Tokenomics</h2>
-  <div class="tokenomics">
-    <div><strong>3%</strong><br/>Charity Wallet</div>
-    <div><strong>2%</strong><br/>Liquidity + Dev</div>
-    <div><strong>20%</strong><br/>Pre-sale</div>
-    <div><strong>30%</strong><br/>Public Launch</div>
-    <div><strong>10%</strong><br/>Team (Vested)</div>
-    <div><strong>35%</strong><br/>Ecosystem & Reserve</div>
-  </div>
-</section>
+  <section id="roadmap">
+    <h2>Roadmap</h2>
+    <ul>
+      <li>✅ Token launch</li>
+      <li>🚀 PancakeSwap listing</li>
+      <li>🗳 DAO setup</li>
+      <li>📊 Charity dashboard</li>
+      <li>🏛 Foundation in UAE</li>
+    </ul>
+  </section>
 
-<section id="roadmap">
-  <h2>Roadmap</h2>
-  <ul>
-    <li>✅ Token deployment</li>
-    <li>🚀 Listing on PancakeSwap</li>
-    <li>🗳 Launch DAO governance</li>
-    <li>📊 Charity reporting dashboard</li>
-    <li>🏛 Register foundation in Dubai</li>
-  </ul>
-</section>
+  <section id="community">
+    <h2>Community</h2>
+    <p>Join us and take part in the mission:</p>
+    <p><a href="https://t.me/AltrucoinChat">💬 Telegram Chat</a> | <a href="https://t.me/AltrucoinGroup">📢 Announcements</a></p>
+    <p><a class="cta-button" href="https://forms.gle/3kjxXr7byU54o8E46" target="_blank">Whitelist Signup</a></p>
+  </section>
 
-<section id="community">
-  <h2>Community</h2>
-  <p>
-    Join us on Telegram:<br />
-    <a href="https://t.me/AltrucoinChat">💬 Chat</a> |
-    <a href="https://t.me/AltrucoinGroup">📢 Updates</a>
-  </p>
-  <p>
-    <a class="cta-button" href="https://forms.gle/3kjxXr7byU54o8E46" target="_blank">Join Whitelist</a>
-  </p>
-</section>
+  <section id="faq">
+    <h2>FAQ</h2>
+    <ul>
+      <li><strong>Is AltruCoin safe?</strong> Yes — the contract is public and verifiable.</li>
+      <li><strong>Where do funds go?</strong> To real charitable causes in USDT.</li>
+      <li><strong>Can I vote?</strong> Yes — DAO governance is enabled.</li>
+    </ul>
+  </section>
 
-<section id="faq">
-  <h2>FAQ</h2>
-  <ul>
-    <li><strong>Is this token safe?</strong><br/>Yes — contract is public, verifiable, and audited.</li>
-    <li><strong>How are funds tracked?</strong><br/>On-chain donations are traceable in real-time.</li>
-    <li><strong>How do I vote?</strong><br/>DAO governance lets you choose causes via snapshot voting.</li>
-    <li><strong>Where are the donations going?</strong><br/>You’ll be able to view impact dashboards and proofs soon.</li>
-  </ul>
-</section>
-
-<footer>
-  &copy; 2025 AltruCoin — Built with purpose. Powered by the people.
-</footer>
+  <footer>
+    &copy; 2025 AltruCoin. Powered by purpose.
+  </footer>
 </body>
 </html>
