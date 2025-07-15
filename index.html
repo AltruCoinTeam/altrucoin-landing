@@ -105,17 +105,6 @@
   </style>
 </head>
 <body>
-  <!-- Preloader -->
-  <div id="preloader" style="position:fixed;width:100%;height:100%;background:var(--background);color:var(--text);display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:1.5rem;z-index:9999;">
-    <div><img src="favicon.ico" alt="Logo" style="width:40px;height:40px;vertical-align:middle;margin-right:10px;">Loading AltruCoin...</div>
-  </div>
-  <script>
-    window.addEventListener('load', () => {
-      const loader = document.getElementById('preloader');
-      if (loader) loader.style.display = 'none';
-    });
-  </script>
-
   <header>
     <nav>
       <a href="#about">About</a>
@@ -127,7 +116,75 @@
     </nav>
   </header>
 
-  <!-- Все секции остаются без изменений -->
+  <section class="hero" data-aos="fade-up">
+    <h1>AltruCoin</h1>
+    <p>The Web3 Token of Altruism. Every transaction helps real people, animals, and the planet — transparently and on-chain.</p>
+    <a class="cta-button" href="https://forms.gle/cRrreLP538mSpkkf7" target="_blank">📝 Join Whitelist</a>
+  </section>
+
+  <section id="about" data-aos="fade-up">
+    <h2>About</h2>
+    <p>AltruCoin is a Web3-powered cryptocurrency with a mission: to turn market activity into meaningful charitable impact. Every time someone trades the token, a fee is collected and distributed monthly:</p>
+    <ul>
+      <li><strong>50%</strong> — to verified charities (in USDT)</li>
+      <li><strong>25%</strong> — for development & audits</li>
+      <li><strong>25%</strong> — for token buybacks</li>
+    </ul>
+    <p>Built on BNB Smart Chain for low fees and speed. Token holders drive the mission through DAO voting. Upcoming: UAE foundation registration & AltruScan dashboard.</p>
+  </section>
+
+  <section id="tokenomics" data-aos="fade-up">
+    <h2>Tokenomics</h2>
+    <p>All trading fee revenue is distributed monthly:</p>
+    <div class="tokenomics">
+      <div><strong>50%</strong><br/>Charity (USDT)</div>
+      <div><strong>25%</strong><br/>Project & Dev</div>
+      <div><strong>25%</strong><br/>Token Buyback</div>
+    </div>
+    <p style="margin-top:2rem;">Token allocation:</p>
+    <div class="tokenomics">
+      <div><strong>20%</strong><br/>Whitelist Sale</div>
+      <div><strong>30%</strong><br/>Public Launch</div>
+      <div><strong>10%</strong><br/>Team (vested)</div>
+      <div><strong>40%</strong><br/>Reserve & Ecosystem</div>
+    </div>
+  </section>
+
+  <section id="roadmap" data-aos="fade-up">
+    <h2>Roadmap</h2>
+    <ul>
+      <li>✅ Token deployment</li>
+      <li>🚀 PancakeSwap listing</li>
+      <li>🗳 DAO governance</li>
+      <li>📊 Charity dashboard</li>
+      <li>🏛 UAE foundation</li>
+    </ul>
+  </section>
+
+  <section id="community" data-aos="fade-up">
+    <h2>Community</h2>
+    <p>Join our growing movement and connect with others who believe in blockchain-powered altruism.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:30px;">
+      <a class="cta-button" href="https://t.me/AltrucoinGroup" target="_blank">📢 Telegram Channel</a>
+      <a class="cta-button" href="https://t.me/AltrucoinChat" target="_blank">💬 Telegram Chat</a>
+      <a class="cta-button" href="https://forms.gle/cRrreLP538mSpkkf7" target="_blank">📝 Join Whitelist</a>
+    </div>
+    <div style="text-align:center;margin-top:20px;">
+      <button onclick="addToken()" class="cta-button">🦊 Add $ALTRU to MetaMask</button>
+    </div>
+  </section>
+
+  <section id="faq" data-aos="fade-up">
+    <h2>FAQ</h2>
+    <ul>
+      <li><strong>What is AltruCoin?</strong><br/>A crypto token on BNB Smart Chain where every trade supports real charitable causes.</li>
+      <li><strong>How are transaction fees used?</strong><br/>5% fee breakdown:<br/>– 2.5% to charities (in USDT)<br/>– 2% to development & liquidity<br/>– 0.5% auto-burn</li>
+      <li><strong>Is the token safe?</strong><br/>Yes — contract is open-source, verifiable, audited soon.</li>
+      <li><strong>How to join?</strong><br/>Fill the whitelist, add token to MetaMask, and follow updates.</li>
+      <li><strong>How to track donations?</strong><br/>AltruScan dashboard coming soon — full on-chain proof.</li>
+      <li><strong>How to add ALTRU?</strong><br/>Click the 🦊 Add to MetaMask button above.</li>
+    </ul>
+  </section>
 
   <section id="contact" data-aos="fade-up">
     <h2>Contact</h2>
