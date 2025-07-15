@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -113,7 +114,6 @@
       <a href="#roadmap">Roadmap</a>
       <a href="#community">Community</a>
       <a href="#faq">FAQ</a>
-      <a href="#donate">Donate</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
@@ -124,27 +124,67 @@
     <a class="cta-button" href="https://forms.gle/cRrreLP538mSpkkf7" target="_blank">📝 Join Whitelist</a>
   </section>
 
-  <!-- other sections here (About, Tokenomics, etc.) -->
-
-  <section id="donate" data-aos="fade-up">
-    <h2>Support / Donate</h2>
-    <p>Help us power transparency and compassion on-chain. You can support AltruCoin’s mission by sending BNB, USDT (BEP20), or ALTRU tokens.</p>
-
-    <div style="text-align:center; margin: 2rem 0;">
-      <strong>Donation Address:</strong><br/>
-      <code id="wallet-address">0x7c76AA8d29F1F075846ED04446197f4fda047c4d</code><br/>
-      <button onclick="copyAddress()" class="cta-button" style="margin-top:10px;">📋 Copy Address</button>
-      <br/><br/>
-      <img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=0x7c76AA8d29F1F075846ED04446197f4fda047c4d" alt="QR Code" width="150" height="150" style="margin-top:1rem; border-radius:12px;"/>
-      <br/><br/>
-      <button onclick="sendViaMetaMask()" class="cta-button">🦊 Send via MetaMask</button>
-    </div>
-
-    <p><strong>⚠️ Please make sure to:</strong></p>
+  <section id="about" data-aos="fade-up">
+    <h2>About</h2>
+    <p>AltruCoin is a Web3-powered cryptocurrency with a mission: to turn market activity into meaningful charitable impact. Every time someone trades the token, a fee is collected and distributed monthly:</p>
     <ul>
-      <li>Use <strong>BNB Smart Chain (BEP20)</strong></li>
-      <li>Only send supported tokens: <strong>BNB, USDT (BEP20), ALTRU</strong></li>
-      <li>Double-check the address before sending</li>
+      <li><strong>50%</strong> — to verified charities (in USDT)</li>
+      <li><strong>25%</strong> — for development & audits</li>
+      <li><strong>25%</strong> — for token buybacks</li>
+    </ul>
+    <p>Built on BNB Smart Chain for low fees and speed. Token holders drive the mission through DAO voting. Upcoming: UAE foundation registration & AltruScan dashboard.</p>
+  </section>
+
+  <section id="tokenomics" data-aos="fade-up">
+    <h2>Tokenomics</h2>
+    <p>All trading fee revenue is distributed monthly:</p>
+    <div class="tokenomics">
+      <div><strong>50%</strong><br/>Charity (USDT)</div>
+      <div><strong>25%</strong><br/>Project & Dev</div>
+      <div><strong>25%</strong><br/>Token Buyback</div>
+    </div>
+    <p style="margin-top:2rem;">Token allocation:</p>
+    <div class="tokenomics">
+      <div><strong>20%</strong><br/>Whitelist Sale</div>
+      <div><strong>30%</strong><br/>Public Launch</div>
+      <div><strong>10%</strong><br/>Team (vested)</div>
+      <div><strong>40%</strong><br/>Reserve & Ecosystem</div>
+    </div>
+  </section>
+
+  <section id="roadmap" data-aos="fade-up">
+    <h2>Roadmap</h2>
+    <ul>
+      <li>✅ Token deployment</li>
+      <li>🚀 PancakeSwap listing</li>
+      <li>🗳 DAO governance</li>
+      <li>📊 Charity dashboard</li>
+      <li>🏛 UAE foundation</li>
+    </ul>
+  </section>
+
+  <section id="community" data-aos="fade-up">
+    <h2>Community</h2>
+    <p>Join our growing movement and connect with others who believe in blockchain-powered altruism.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:30px;">
+      <a class="cta-button" href="https://t.me/AltrucoinGroup" target="_blank">📢 Telegram Channel</a>
+      <a class="cta-button" href="https://t.me/AltrucoinChat" target="_blank">💬 Telegram Chat</a>
+      <a class="cta-button" href="https://forms.gle/cRrreLP538mSpkkf7" target="_blank">📝 Join Whitelist</a>
+    </div>
+    <div style="text-align:center;margin-top:20px;">
+      <button onclick="addToken()" class="cta-button">🦊 Add $ALTRU to MetaMask</button>
+    </div>
+  </section>
+
+  <section id="faq" data-aos="fade-up">
+    <h2>FAQ</h2>
+    <ul>
+      <li><strong>What is AltruCoin?</strong><br/>A crypto token on BNB Smart Chain where every trade supports real charitable causes.</li>
+      <li><strong>How are transaction fees used?</strong><br/>5% fee breakdown:<br/>– 2.5% to charities (in USDT)<br/>– 2% to development & liquidity<br/>– 0.5% auto-burn</li>
+      <li><strong>Is the token safe?</strong><br/>Yes — contract is open-source, verifiable, audited soon.</li>
+      <li><strong>How to join?</strong><br/>Fill the whitelist, add token to MetaMask, and follow updates.</li>
+      <li><strong>How to track donations?</strong><br/>AltruScan dashboard coming soon — full on-chain proof.</li>
+      <li><strong>How to add ALTRU?</strong><br/>Click the 🦊 Add to MetaMask button above.</li>
     </ul>
   </section>
 
@@ -162,33 +202,22 @@
   </footer>
 
   <script>
-    function copyAddress() {
-      const address = "0x7c76AA8d29F1F075846ED04446197f4fda047c4d";
-      navigator.clipboard.writeText(address).then(() => alert("Address copied!"));
-    }
-
-    async function sendViaMetaMask() {
-      if (typeof window.ethereum !== 'undefined') {
-        try {
-          await window.ethereum.request({
-            method: 'wallet_watchAsset',
-            params: {
-              type: 'ERC20',
-              options: {
-                address: '0x7c734036c3C194d62CB5fADba8F93cCB85E0E0f4',
-                symbol: 'ALTRU',
-                decimals: 18,
-                image: 'https://altrucoin.org/favicon.ico'
-              }
+    async function addToken() {
+      try {
+        const wasAdded = await window.ethereum.request({
+          method:'wallet_watchAsset',
+          params:{
+            type:'ERC20',
+            options:{
+              address:'0x7c734036c3C194d62CB5fADba8F93cCB85E0E0f4',
+              symbol:'ALTRU',
+              decimals:18,
+              image:'https://altrucoin.org/favicon.ico'
             }
-          });
-        } catch (error) {
-          console.error(error);
-          alert("Please ensure MetaMask is installed.");
-        }
-      } else {
-        alert("MetaMask not detected.");
-      }
+          }
+        });
+        console.log(wasAdded?'ALTRU added':'User rejected');
+      } catch(e){console.error(e);}
     }
   </script>
 
