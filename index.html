@@ -6,284 +6,217 @@
   <meta name="description" content="AltruCoin – The Token of Altruism on the Blockchain." />
   <meta property="og:title" content="AltruCoin" />
   <meta property="og:description" content="Every transaction supports real-world good." />
-  <meta property="og:image" content="og-image.png" />
-  <meta name="theme-color" content="#00bfa6" />
+  <meta property="og:image" content="/og-image.png" />
   <link rel="icon" href="favicon.ico" />
   <title>AltruCoin – Token of Altruism</title>
-
-  <!-- AOS animation CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
-
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-
-    :root {
-      --primary: #00c2ff;
-      --secondary: #7d00ff;
-      --background: #181c2f;
-      --text: #ffffff;
-      --muted: rgba(255, 255, 255, 0.08);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      scroll-behavior: smooth;
-    }
-
     body {
+      margin: 0;
       font-family: 'Inter', sans-serif;
-      background: var(--background);
-      color: var(--text);
+      background: #ffffff;
+      color: #111;
+      line-height: 1.6;
     }
-
     header {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      padding: 1.5rem;
+      background: #00bfa6;
+      color: #fff;
+      padding: 20px;
       text-align: center;
     }
-
     nav a {
       color: white;
-      margin: 0 12px;
+      margin: 0 10px;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: bold;
     }
-
     .hero {
-      padding: 100px 20px;
+      background: #f9f9f9;
+      padding: 80px 20px;
       text-align: center;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
     }
-
     .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
+      font-size: 2.5em;
+      margin-bottom: 0.5em;
     }
-
     .hero p {
-      font-size: 1.2rem;
-      max-width: 600px;
-      margin: 0 auto 2rem;
+      font-size: 1.2em;
+      margin-bottom: 1.5em;
     }
-
     .cta-button {
       display: inline-block;
-      padding: 0.75rem 1.5rem;
-      background: var(--muted);
-      border: 2px solid #fff;
-      border-radius: 12px;
+      padding: 12px 24px;
+      background: #00bfa6;
       color: #fff;
-      font-weight: 700;
+      border-radius: 8px;
       text-decoration: none;
-      transition: background 0.3s, transform 0.3s;
+      font-weight: bold;
     }
-
-    .cta-button:hover {
-      background: rgba(255, 255, 255, 0.15);
-      transform: translateY(-2px);
-    }
-
     section {
       padding: 60px 20px;
       max-width: 900px;
       margin: auto;
     }
-
-    section h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      border-bottom: 2px solid var(--primary);
-      padding-bottom: 8px;
+    section:nth-child(even) {
+      background: #f4f7f8;
     }
-
+    h2 {
+      border-bottom: 2px solid #00bfa6;
+      padding-bottom: 10px;
+    }
+    ul {
+      padding-left: 20px;
+    }
     .tokenomics {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
-      list-style: none;
-      padding: 0;
-      justify-content: center;
+      justify-content: space-around;
     }
-
     .tokenomics div {
-      background: var(--muted);
+      background: #e3faf7;
+      border-radius: 8px;
       padding: 20px;
-      border-radius: 10px;
+      margin: 10px;
+      width: 220px;
       text-align: center;
-      flex: 1 1 220px;
     }
-
     footer {
+      background: #333;
+      color: #ccc;
       text-align: center;
       padding: 40px;
-      background: #111;
-      color: #aaa;
-    }
-
-    ul {
-      padding-left: 1.2rem;
+      font-size: 0.9em;
     }
   </style>
 </head>
 <body>
-  <!-- Preloader -->
-  <div id="preloader" style="position: fixed; width: 100%; height: 100%; background: #181c2f; color: white; display: flex; align-items: center; justify-content: center; font-family: Inter, sans-serif; font-size: 1.5rem; z-index: 9999;">
-    <div>
-      <img src="favicon.ico" alt="Logo" style="width: 40px; height: 40px; vertical-align: middle; margin-right: 10px;">
-      Loading AltruCoin...
-    </div>
-  </div>
-  <script>
-    window.addEventListener('load', () => {
-      const loader = document.getElementById('preloader');
-      if (loader) loader.style.display = 'none';
-    });
-  </script>
-
   <header>
+    <h1>AltruCoin</h1>
     <nav>
       <a href="#about">About</a>
+      <a href="#how">How It Works</a>
       <a href="#tokenomics">Tokenomics</a>
       <a href="#roadmap">Roadmap</a>
       <a href="#community">Community</a>
       <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
     </nav>
   </header>
 
-  <section class="hero" data-aos="fade-up">
-    <h1>AltruCoin</h1>
-    <p>The Web3 Token of Altruism. Every transaction helps real people, animals, and the planet — transparently and on-chain.</p>
-    <a class="cta-button" href="#community">Join Whitelist</a>
-  </section>
-
-  <section id="about" data-aos="fade-up">
-    <h2>About</h2>
-    <p>AltruCoin is a Web3-powered cryptocurrency with a mission: to turn market activity into meaningful charitable impact.</p>
-    <ul>
-      <li><strong>50%</strong> — to verified charities (in USDT)</li>
-      <li><strong>25%</strong> — for project development and audits</li>
-      <li><strong>25%</strong> — for token buyback (if feasible)</li>
-    </ul>
-    <p>Built on BNB Smart Chain for low fees and speed. DAO governance empowers holders to vote on donations. Plans include a registered UAE foundation and the AltruScan dashboard.</p>
-  </section>
-
-  <section id="tokenomics" data-aos="fade-up">
-    <h2>Tokenomics</h2>
-    <p>All trading fee revenue is distributed monthly as follows:</p>
-    <div class="tokenomics">
-      <div><strong>50%</strong><br/>Charity (in USDT)</div>
-      <div><strong>25%</strong><br/>Project & Ops</div>
-      <div><strong>25%</strong><br/>Token Buyback</div>
-    </div>
-
-    <p style="margin-top:2rem;">Token allocation:</p>
-    <div class="tokenomics">
-      <div><strong>20%</strong><br/>Whitelist Sale</div>
-      <div><strong>30%</strong><br/>Public Launch</div>
-      <div><strong>10%</strong><br/>Team (vested)</div>
-      <div><strong>40%</strong><br/>Reserve & Ecosystem</div>
-    </div>
-  </section>
-
-  <section id="roadmap" data-aos="fade-up">
-    <h2>Roadmap</h2>
-    <ul>
-      <li>✅ Token launch</li>
-      <li>🚀 PancakeSwap listing</li>
-      <li>🗳 DAO setup</li>
-      <li>📊 Charity dashboard</li>
-      <li>🏛 UAE foundation</li>
-    </ul>
-  </section>
-
-<section id="community" data-aos="fade-up">
-  <h2>Community</h2>
-  <p>
-    Join our growing movement and connect with others who believe in blockchain-powered altruism.
-  </p>
-
-  <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 30px;">
-    <a class="cta-button" href="https://t.me/AltrucoinGroup" target="_blank">📢 Telegram Channel</a>
-    <a class="cta-button" href="https://t.me/AltrucoinChat" target="_blank">💬 Telegram Chat</a>
+  <div class="hero">
+    <h1>The Token of Altruism</h1>
+    <p>Every transaction helps real people, animals, and the planet. Join the movement.</p>
     <a class="cta-button" href="https://forms.gle/cRrreLP538mSpkkf7" target="_blank">📝 Join Whitelist</a>
   </div>
 
-  <!-- MetaMask Button -->
-  <div style="text-align: center; margin-top: 20px;">
-    <button onclick="addToken()" class="cta-button">
-      🦊 Add $ALTRU to MetaMask
-    </button>
-  </div>
-</section>
+  <section id="about">
+    <h2>About</h2>
+    <p>AltruCoin is a decentralized cryptocurrency on BNB Smart Chain. Every transaction funds charitable initiatives in real-time through automated, transparent donations. Built for impact.</p>
+  </section>
 
-<!-- MetaMask Script -->
-<script>
-  async function addToken() {
-    try {
-      const wasAdded = await window.ethereum.request({
-        method: 'wallet_watchAsset',
-        params: {
-          type: 'ERC20',
-          options: {
-            address: '0x7c734036c3C194d62CB5fADba8F93cCB85E0E0f4',
-            symbol: 'ALTRU',
-            decimals: 18,
-            image: 'https://altrucoin.org/favicon.ico'
-          },
-        },
-      });
-
-      if (wasAdded) {
-        console.log('ALTRU added to MetaMask');
-      } else {
-        console.log('User rejected the request');
-      }
-    } catch (error) {
-      console.error('MetaMask error:', error);
-    }
-  }
-</script>
-
-  <section id="faq" data-aos="fade-up">
-    <h2>FAQ</h2>
-    <section id="contact" data-aos="fade-up">
-  <h2>Contact</h2>
-  <p>
-    📩 For support, partnerships, media or general inquiries — feel free to reach out to us:
-  </p>
-  <div style="text-align: center; margin-top: 20px;">
-    <a href="mailto:support@altrucoin.org" class="cta-button">support@altrucoin.org</a>
-  </div>
-</section>
+  <section id="how">
+    <h2>How It Works</h2>
     <ul>
-      <li><strong>What is AltruCoin?</strong><br/>
-        AltruCoin is a cryptocurrency built to support charitable initiatives. A portion of every trade is collected as a fee, which is accumulated and distributed monthly: to verified charities, project operations, and token buyback.
-      </li>
-      <li><strong>How are the funds distributed?</strong><br/>
-        100% of trading fee revenue is split monthly as follows:
-        <ul>
-          <li>50% — to charity (in USDT)</li>
-          <li>25% — to project development and operations</li>
-          <li>25% — to token buyback (if feasible)</li>
-        </ul>
-      </li>
-      <li><strong>Is this project safe?</strong><br/>The token contract is open, verifiable, and will be audited.</li>
-      <li><strong>How are donations managed?</strong><br/>Funds are distributed manually at the end of each month to verified charity wallets.</li>
-      <li><strong>Who decides which charities are supported?</strong><br/>The AltruCoin DAO — token holders vote via governance.</li>
-      <li><strong>How can I participate?</strong><br/>Hold $ALTRU, vote, spread the word, and join the mission.</li>
-      <li><strong>Where can I track donations?</strong><br/>Through the AltruScan dashboard (coming soon).</li>
-      <li><strong>What are the benefits for holders?</strong><br/>Governance rights, community access, and upside potential.</li>
+      <li>5% transaction tax</li>
+      <li>2.5% to verified charities (in USDT)</li>
+      <li>2% to liquidity and development</li>
+      <li>0.5% automatically burned</li>
+      <li>DAO voting to choose causes</li>
     </ul>
   </section>
 
+  <section id="tokenomics">
+    <h2>Tokenomics</h2>
+    <div class="tokenomics">
+      <div><strong>2.5%</strong><br/>Charity Wallet</div>
+      <div><strong>2%</strong><br/>Liquidity + Dev</div>
+      <div><strong>0.5%</strong><br/>Auto Burn</div>
+      <div><strong>20%</strong><br/>Pre-sale</div>
+      <div><strong>30%</strong><br/>Public Launch</div>
+      <div><strong>10%</strong><br/>Team (Vested)</div>
+      <div><strong>35%</strong><br/>Ecosystem & Reserve</div>
+    </div>
+  </section>
+
+  <section id="roadmap">
+    <h2>Roadmap</h2>
+    <ul>
+      <li>✅ Token deployment</li>
+      <li>🚀 Listing on PancakeSwap</li>
+      <li>🗳 Launch DAO governance</li>
+      <li>📊 Charity reporting dashboard</li>
+      <li>🏛 Register foundation in Dubai</li>
+    </ul>
+  </section>
+
+  <section id="community" data-aos="fade-up">
+    <h2>Community</h2>
+    <p>
+      Join our growing movement and connect with others who believe in blockchain-powered altruism.
+    </p>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 30px;">
+      <a class="cta-button" href="https://t.me/AltrucoinGroup" target="_blank">📢 Telegram Channel</a>
+      <a class="cta-button" href="https://t.me/AltrucoinChat" target="_blank">💬 Telegram Chat</a>
+      <a class="cta-button" href="https://forms.gle/cRrreLP538mSpkkf7" target="_blank">📝 Join Whitelist</a>
+    </div>
+    <div style="text-align: center; margin-top: 20px;">
+      <button onclick="addToken()" class="cta-button">
+        🦊 Add $ALTRU to MetaMask
+      </button>
+    </div>
+  </section>
+
+  <section id="faq" data-aos="fade-up">
+    <h2>FAQ</h2>
+    <ul>
+      <li><strong>What is AltruCoin?</strong><br/> A crypto token on BNB Smart Chain where every trade supports real charitable causes.</li>
+      <li><strong>How are transaction fees used?</strong><br/> 5% fee breakdown:<br/> – 2.5% to verified charities (in USDT)<br/> – 2% to development & liquidity<br/> – 0.5% auto-burn</li>
+      <li><strong>Is the token safe?</strong><br/> Yes — the contract is verifiable, open-source, and pending audit before public trading.</li>
+      <li><strong>How can I join?</strong><br/> Fill out the whitelist form and join our community for updates.</li>
+      <li><strong>Where can I track donations?</strong><br/> A public dashboard is coming soon — with verified USDT transfers and proof of impact.</li>
+      <li><strong>How do I add ALTRU to MetaMask?</strong><br/> Visit <a href="https://altrucoin.org">altrucoin.org</a> and click the 🦊 MetaMask button.</li>
+    </ul>
+  </section>
+
+  <section id="contact" data-aos="fade-up">
+    <h2>Contact</h2>
+    <p>
+      📩 For support, partnerships, media or general inquiries — feel free to reach out to us:
+    </p>
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="mailto:support@altrucoin.org" class="cta-button">support@altrucoin.org</a>
+    </div>
+  </section>
+
   <footer>
-    &copy; 2025 AltruCoin — Built with purpose. Powered by people.
+    &copy; 2025 AltruCoin — Built with purpose. Powered by the people.<br/>
+    📩 Contact us: <a href="mailto:support@altrucoin.org">support@altrucoin.org</a>
   </footer>
 
-  <!-- AOS animation JS -->
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>AOS.init();</script>
+  <script>
+    async function addToken() {
+      try {
+        const wasAdded = await window.ethereum.request({
+          method: 'wallet_watchAsset',
+          params: {
+            type: 'ERC20',
+            options: {
+              address: '0x7c734036c3C194d62CB5fADba8F93cCB85E0E0f4',
+              symbol: 'ALTRU',
+              decimals: 18,
+              image: 'https://altrucoin.org/favicon.ico'
+            },
+          },
+        });
+
+        if (wasAdded) {
+          console.log('ALTRU added to MetaMask');
+        } else {
+          console.log('User rejected the request');
+        }
+      } catch (error) {
+        console.error('MetaMask error:', error);
+      }
+    }
+  </script>
 </body>
 </html>
