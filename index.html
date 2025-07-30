@@ -232,24 +232,31 @@
   </footer>
 
   <script>
-    async function addToken() {
-      try {
-        const wasAdded = await window.ethereum.request({
-          method:'wallet_watchAsset',
-          params:{
-            type:'ERC20',
-            options:{
-              address:'0x7c734036c3C194d62CB5fADba8F93cCB85E0E0f4',
-              symbol:'ALTRU',
-              decimals:18,
-              image:'https://altrucoin.org/favicon.ico'
-            }
+  async function addToken() {
+    try {
+      const wasAdded = await window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: {
+            address: '0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E',
+            symbol: 'ALTRU',
+            decimals: 18,
+            image: 'https://altrucoin.org/favicon.ico'
           }
-        });
-        console.log(wasAdded?'ALTRU added':'User rejected');
-      } catch(e){console.error(e);}
+        }
+      });
+
+      if (wasAdded) {
+        console.log('Token added!');
+      } else {
+        console.log('User rejected token addition');
+      }
+    } catch (error) {
+      console.error(error);
     }
-  </script>
+  }
+</script>
 
   <!-- AOS script -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
