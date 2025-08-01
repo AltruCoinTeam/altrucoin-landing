@@ -4,22 +4,20 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="AltruCoin – The Token of Altruism on the Blockchain."/>
-  <p>Price: <span id="altruPrice">$...</span></p>
   <meta property="og:title" content="AltruCoin"/>
   <meta property="og:description" content="Every transaction supports real-world good."/>
   <meta property="og:image" content="og-image.png"/>
   <link rel="icon" href="favicon.ico"/>
   <title>AltruCoin – Token of Altruism</title>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-QBQVD56HTD"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-QBQVD56HTD');
-</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QBQVD56HTD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QBQVD56HTD');
+  </script>
 
   <!-- AOS -->
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
@@ -120,6 +118,8 @@
     <nav>
       <a href="#about">About</a>
       <a href="#tokenomics">Tokenomics</a>
+      <a href="#buy">Buy</a>
+      <a href="#chart">Chart</a>
       <a href="#roadmap">Roadmap</a>
       <a href="#community">Community</a>
       <a href="#faq">FAQ</a>
@@ -130,7 +130,6 @@
   <section class="hero" data-aos="fade-up">
     <h1>AltruCoin</h1>
     <p>The Web3 Token of Altruism. Every transaction helps real people, animals, and the planet — transparently and on-chain.</p>
-    <a class="cta-button" href="https://forms.gle/cRrreLP538mSpkkf7" target="_blank">📝 Join Whitelist</a>
   </section>
 
   <section id="about" data-aos="fade-up">
@@ -154,10 +153,26 @@
     </div>
     <p style="margin-top:2rem;">Token allocation:</p>
     <div class="tokenomics">
-      <div><strong>20%</strong><br/>Whitelist Sale</div>
+      <div><strong>20%</strong><br/>Private Sale</div>
       <div><strong>30%</strong><br/>Public Launch</div>
       <div><strong>10%</strong><br/>Team (vested)</div>
       <div><strong>40%</strong><br/>Reserve & Ecosystem</div>
+    </div>
+  </section>
+
+  <section id="buy" data-aos="fade-up">
+    <h2>Buy $ALTRU</h2>
+    <p>You can buy AltruCoin directly on PancakeSwap:</p>
+    <div style="text-align:center; margin: 20px 0;">
+      <a class="cta-button" href="https://pancakeswap.finance/swap?outputCurrency=0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E" target="_blank">🔥 Buy on PancakeSwap</a>
+    </div>
+  </section>
+
+  <section id="chart" data-aos="fade-up">
+    <h2>Live Price Chart</h2>
+    <div style="width:100%; max-width:800px; margin:auto;">
+      <iframe src="https://dexscreener.com/bsc/0x5a59F6581EF65099bE92B491c9B36B4a66727707?embed=1&theme=dark"
+              width="100%" height="500" style="border:0;" allowfullscreen></iframe>
     </div>
   </section>
 
@@ -178,7 +193,6 @@
     <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:30px;">
       <a class="cta-button" href="https://t.me/AltrucoinGroup" target="_blank">📢 Telegram Channel</a>
       <a class="cta-button" href="https://t.me/AltrucoinChat" target="_blank">💬 Telegram Chat</a>
-      <a class="cta-button" href="https://forms.gle/cRrreLP538mSpkkf7" target="_blank">📝 Join Whitelist</a>
     </div>
     <div style="text-align:center;margin-top:20px;">
       <button onclick="addToken()" class="cta-button">🦊 Add $ALTRU to MetaMask</button>
@@ -191,41 +205,36 @@
       <li><strong>What is AltruCoin?</strong><br/>A crypto token on BNB Smart Chain where every trade supports real charitable causes.</li>
       <li><strong>How are transaction fees used?</strong><br/>5% fee breakdown:<br/>– 2.5% to charities (in USDT)<br/>– 2% to development & liquidity<br/>– 0.5% auto-burn</li>
       <li><strong>Is the token safe?</strong><br/>Yes — contract is open-source, verifiable, audited soon.</li>
-      <li><strong>How to join?</strong><br/>Fill the whitelist, add token to MetaMask, and follow updates.</li>
-      <li><strong>How to track donations?</strong><br/>AltruScan dashboard coming soon — full on-chain proof.</li>
       <li><strong>How to add ALTRU?</strong><br/>Click the 🦊 Add to MetaMask button above.</li>
     </ul>
   </section>
 
   <section id="contact" data-aos="fade-up">
-  <h2>Contact</h2>
-  <p>📩 For support, partnerships, or media inquiries — reach out to us:</p>
-  <div style="text-align:center; margin-top:20px;">
-    <a href="mailto:support@altrucoin.org" class="cta-button">support@altrucoin.org</a>
-  </div>
-
-  <div style="text-align:center; margin-top:40px;">
-    <h3>❤️ Support / Donate</h3>
-    <p style="word-break:break-all; font-size:1rem;">0x7c76AA8d29F1F075846ED04446197f4fda047c4d</p>
-    <button class="copy-button" onclick="navigator.clipboard.writeText('0x7c76AA8d29F1F075846ED04446197f4fda047c4d')">📋 Copy Address</button>
-
-    <div style="margin-top:20px;">
-      <img src="donation-qr.png" alt="QR Code" style="max-width:180px;" />
-      <p style="font-size:0.9rem; opacity:0.7;">Scan via MetaMask / Trust Wallet</p>
+    <h2>Contact</h2>
+    <p>📩 For support, partnerships, or media inquiries — reach out to us:</p>
+    <div style="text-align:center; margin-top:20px;">
+      <a href="mailto:support@altrucoin.org" class="cta-button">support@altrucoin.org</a>
     </div>
+    <div style="text-align:center; margin-top:40px;">
+      <h3>❤️ Support / Donate</h3>
+      <p style="word-break:break-all; font-size:1rem;">0x7c76AA8d29F1F075846ED04446197f4fda047c4d</p>
+      <button class="copy-button" onclick="navigator.clipboard.writeText('0x7c76AA8d29F1F075846ED04446197f4fda047c4d')">📋 Copy Address</button>
+      <div style="margin-top:20px;">
+        <img src="donation-qr.png" alt="QR Code" style="max-width:180px;" />
+        <p style="font-size:0.9rem; opacity:0.7;">Scan via MetaMask / Trust Wallet</p>
+      </div>
+      <p style="margin-top:20px; font-size:0.9rem; opacity:0.6;">
+        You can send USDT (BEP-20), BNB or any supported BEP-20 token.<br/>
+        Always verify the network and address before sending.
+      </p>
+      <p>
+        <a href="https://bscscan.com/address/0x7c76AA8d29F1F075846ED04446197f4fda047c4d" target="_blank" style="color:var(--primary); text-decoration:underline;">
+          🔍 View on BscScan
+        </a>
+      </p>
+    </div>
+  </section>
 
-    <p style="margin-top:20px; font-size:0.9rem; opacity:0.6;">
-      You can send USDT (BEP-20), BNB or any supported BEP-20 token.<br/>
-      Always verify the network and address before sending.
-    </p>
-
-    <p>
-      <a href="https://bscscan.com/address/0x7c76AA8d29F1F075846ED04446197f4fda047c4d" target="_blank" style="color:var(--primary); text-decoration:underline;">
-        🔍 View on BscScan
-      </a>
-    </p>
-  </div>
-</section>
   <footer>
     &copy; 2025 AltruCoin — Built with purpose. Powered by people.<br/>
     📩 Contact us: <a href="mailto:support@altrucoin.org">support@altrucoin.org</a><br/>
@@ -233,48 +242,44 @@
   </footer>
 
   <script>
-  async function addToken() {
-    try {
-      const wasAdded = await window.ethereum.request({
-        method: 'wallet_watchAsset',
-        params: {
-          type: 'ERC20',
-          options: {
-            address: '0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E',
-            symbol: 'ALTRU',
-            decimals: 18,
-            image: 'https://altrucoin.org/favicon.ico'
+    async function addToken() {
+      try {
+        const wasAdded = await window.ethereum.request({
+          method: 'wallet_watchAsset',
+          params: {
+            type: 'ERC20',
+            options: {
+              address: '0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E',
+              symbol: 'ALTRU',
+              decimals: 18,
+              image: 'https://altrucoin.org/favicon.ico'
+            }
           }
-        }
-      });
-
-      if (wasAdded) {
-        console.log('Token added!');
-      } else {
-        console.log('User rejected token addition');
+        });
+        if (wasAdded) console.log('Token added!');
+        else console.log('User rejected token addition');
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
     }
-  }
-</script>
+  </script>
 
   <!-- AOS script -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>AOS.init();</script>
   <script>
-  async function fetchAltruPrice() {
-    try {
-      const res = await fetch("https://api.dexscreener.com/latest/dex/pairs/bsc/0x5a59F6581EF65099bE92B491c9B36B4a66727707");
-      const data = await res.json();
-      const price = parseFloat(data.pair.priceUsd);
-      document.getElementById("altruPrice").innerText = `$${price.toFixed(8)}`;
-    } catch (e) {
-      console.error("Error fetching ALTRU price:", e);
+    async function fetchAltruPrice() {
+      try {
+        const res = await fetch("https://api.dexscreener.com/latest/dex/pairs/bsc/0x5a59F6581EF65099bE92B491c9B36B4a66727707");
+        const data = await res.json();
+        const price = parseFloat(data.pair.priceUsd);
+        document.getElementById("altruPrice").innerText = `$${price.toFixed(8)}`;
+      } catch (e) {
+        console.error("Error fetching ALTRU price:", e);
+      }
     }
-  }
-  fetchAltruPrice();
-  setInterval(fetchAltruPrice, 15000); // refresh every 15 seconds
-</script>
+    fetchAltruPrice();
+    setInterval(fetchAltruPrice, 15000);
+  </script>
 </body>
 </html>
