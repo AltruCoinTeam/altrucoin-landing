@@ -30,6 +30,7 @@
       --background: #181c2f;
       --text: #ffffff;
       --muted: rgba(255,255,255,0.08);
+      --border: #2a3350;
     }
     * { margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth; }
     body {
@@ -94,15 +95,13 @@
       text-align:center;
       flex:1 1 220px;
     }
-    <div style="background: #1f1f2e; border-left: 5px solid #00c2ff; padding: 20px; margin: 40px auto; max-width: 800px; border-radius: 12px;" data-aos="fade-up">
-  <h3 style="color: #00c2ff; margin-bottom: 10px;">🔒 Liquidity Locked</h3>
-  <p style="line-height: 1.6; color: #ddd; font-size: 1rem;">
-    To ensure long-term trust and prevent rug pulls, the ALTRU/BNB liquidity on PancakeSwap has been locked via PinkLock.
-  </p>
-  <a href="https://www.pinksale.finance/pinklock/bsc/record/1340541" target="_blank" style="display: inline-block; margin-top: 12px; background: #00c2ff; color: #000; padding: 10px 20px; font-weight: 600; border-radius: 8px; text-decoration: none;">
-    🔐 View Lock on PinkSale
-  </a>
-</div>
+    .pill{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:#12162a;color:#b9c3e6}
+    .addr{font-family:ui-monospace,Menlo,Consolas;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+    .card{background:#12162a;border:1px solid var(--border);border-radius:16px;padding:16px;margin:12px 0}
+    input{padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#0d1225;color:#fff;min-width:160px}
+    button{padding:10px 14px;border:0;border-radius:10px;background:var(--primary);color:#00111a;font-weight:700;cursor:pointer}
+    button.ghost{background:transparent;color:#fff;border:1px solid var(--border)}
+    .muted{opacity:.75}
     footer {
       text-align:center;
       padding:40px;
@@ -150,9 +149,9 @@
       <li><strong>25%</strong> — for token buybacks</li>
     </ul>
     <p>Built on BNB Smart Chain for low fees and speed. Token holders drive the mission through DAO voting. Upcoming: UAE foundation registration & AltruScan dashboard.</p>
-<div style="margin-top: 20px; text-align: center;">
-  <a class="cta-button" href="Whitepaper.pdf" target="_blank">📄 View Whitepaper (PDF)</a>
-</div>
+    <div style="margin-top: 20px; text-align: center;">
+      <a class="cta-button" href="Whitepaper.pdf" target="_blank">📄 View Whitepaper (PDF)</a>
+    </div>
   </section>
 
   <section id="tokenomics" data-aos="fade-up">
@@ -172,79 +171,56 @@
     </div>
   </section>
 
+  <!-- BUY SECTION (updated, keeps same anchor) -->
   <section id="buy" data-aos="fade-up">
     <h2>Buy $ALTRU</h2>
-    <div style="padding:20px;border:1px solid #ccc;border-radius:12px;max-width:500px">
-  <h2>Buy AltruCoin (ALTRU)</h2>
-  <p>Price: <b>1 USDT = 100,000 ALTRU</b> (BNB equivalent auto-calculated)</p>
 
-  <label>Amount (ALTRU):</label><br>
-  <input id="altruAmount" type="number" value="100000" min="100000" step="100000" style="width:100%;margin-bottom:10px"><br>
+    <!-- Network / Account pills -->
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 14px 0">
+      <div class="pill"><strong>Network:</strong>&nbsp;<span id="netName">—</span>&nbsp;(<span id="chainId">—</span>)</div>
+      <div class="pill"><strong>Account:</strong>&nbsp;<span id="account" class="addr">—</span></div>
+    </div>
 
-  <button onclick="buyWithBNB()">Buy with BNB</button>
-  <button onclick="buyWithUSDT()">Buy with USDT</button>
+    <div class="card">
+      <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between">
+        <div><b>Presale:</b> <span id="contractAddr" class="addr">—</span></div>
+        <div><b>BNB→USD (oracle):</b> <span id="bnbUsd">—</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(160px,1fr));gap:12px;margin-top:8px">
+        <div><b>Rate</b><br><span id="rateUSDT">—</span> ALTRU / 1 USDT</div>
+        <div><b>Sold</b><br><span id="sold">—</span> / <span id="cap">—</span> ALTRU</div>
+        <div><b>ALTRU in contract</b><br><span id="balance">—</span></div>
+      </div>
+    </div>
 
-  <p id="status" style="margin-top:10px;color:green"></p>
-</div>
+    <div class="card">
+      <h3>Buy with BNB</h3>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px">
+        <input id="bnbAmount" type="number" step="0.0001" placeholder="BNB amount"/>
+        <button id="maxBNB" class="ghost">Max BNB</button>
+        <button id="buyBNB">Buy</button>
+      </div>
+      <div class="muted" style="margin-top:6px">Send BNB; tokens are calculated on‑chain via Chainlink BNB/USD × rate.</div>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
-<script>
-  const presaleAddress = "0x4D3F586Dc66f41a05d36F960121E2C7F1a5Ab64c";
-  const usdtAddress = "0x55d398326f99059fF775485246999027B3197955";
-  const presaleAbi = [ /* ABI твоего Pre-Sale контракта */ ];
-  const erc20Abi = [
-    {"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"type":"function"}
-  ];
+    <div class="card">
+      <h3>Buy with USDT</h3>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px">
+        <input id="usdtAmount" type="number" step="0.01" placeholder="USDT amount"/>
+        <button id="maxUSDT" class="ghost">Max USDT</button>
+        <button id="buyUSDT_amount">Buy (USDT)</button>
+      </div>
+      <div class="muted" style="margin:8px 0">Or target an ALTRU amount (auto‑computes USDT):</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px">
+        <input id="altruAmount" type="number" step="100000" value="100000" min="100000" placeholder="ALTRU amount"/>
+        <button id="buyUSDT_altru">Buy (ALTRU)</button>
+      </div>
+      <div class="muted" style="margin-top:6px">We auto‑approve if allowance is insufficient.</div>
+    </div>
 
-  let web3;
-  let presale;
-  let usdt;
+    <p id="status" class="muted" style="margin-top:10px;"></p>
 
-  async function connect() {
-    if (window.ethereum) {
-      web3 = new Web3(window.ethereum);
-      await ethereum.request({ method: "eth_requestAccounts" });
-      presale = new web3.eth.Contract(presaleAbi, presaleAddress);
-      usdt = new web3.eth.Contract(erc20Abi, usdtAddress);
-    } else {
-      alert("Install MetaMask!");
-    }
-  }
-
-  async function buyWithBNB() {
-    await connect();
-    const accounts = await web3.eth.getAccounts();
-    const altru = document.getElementById("altruAmount").value;
-    const altruWei = web3.utils.toWei(altru, "ether");
-
-    // 1 USDT = 0.001315789 BNB
-    const bnbPerAltru = 0.001315789 / 100000;
-    const bnbValue = altru * bnbPerAltru;
-
-    await presale.methods.buyWithBNB(altruWei).send({
-      from: accounts[0],
-      value: web3.utils.toWei(bnbValue.toString(), "ether")
-    });
-
-    document.getElementById("status").innerText = "BNB purchase successful!";
-  }
-
-  async function buyWithUSDT() {
-    await connect();
-    const accounts = await web3.eth.getAccounts();
-    const altru = document.getElementById("altruAmount").value;
-    const altruWei = web3.utils.toWei(altru, "ether");
-
-    // Approve first
-    await usdt.methods.approve(presaleAddress, web3.utils.toWei("1", "ether")).send({ from: accounts[0] });
-
-    // Buy
-    await presale.methods.buyWithUSDT(web3.utils.toWei("1", "ether")).send({ from: accounts[0] });
-
-    document.getElementById("status").innerText = "USDT purchase successful!";
-  }
-</script>
-    <p>You can buy AltruCoin directly on PancakeSwap:</p>
+    <p style="margin-top:16px">You can buy AltruCoin directly on PancakeSwap:</p>
     <div style="text-align:center; margin: 20px 0;">
       <a class="cta-button" href="https://pancakeswap.finance/swap?outputCurrency=0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E" target="_blank">🔥 Buy on PancakeSwap</a>
     </div>
@@ -280,6 +256,17 @@
       <button onclick="addToken()" class="cta-button">🦊 Add $ALTRU to MetaMask</button>
     </div>
   </section>
+
+  <!-- Moved OUT of <style>: Liquidity Locked card -->
+  <div style="background: #1f1f2e; border-left: 5px solid #00c2ff; padding: 20px; margin: 40px auto; max-width: 800px; border-radius: 12px;" data-aos="fade-up">
+    <h3 style="color: #00c2ff; margin-bottom: 10px;">🔒 Liquidity Locked</h3>
+    <p style="line-height: 1.6; color: #ddd; font-size: 1rem;">
+      To ensure long-term trust and prevent rug pulls, the ALTRU/BNB liquidity on PancakeSwap has been locked via PinkLock.
+    </p>
+    <a href="https://www.pinksale.finance/pinklock/bsc/record/1340541" target="_blank" style="display: inline-block; margin-top: 12px; background: #00c2ff; color: #000; padding: 10px 20px; font-weight: 600; border-radius: 8px; text-decoration: none;">
+      🔐 View Lock on PinkSale
+    </a>
+  </div>
 
   <section id="faq" data-aos="fade-up">
     <h2>FAQ</h2>
@@ -349,19 +336,208 @@
   <!-- AOS script -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>AOS.init();</script>
+
+  <!-- Dexscreener price fetch (kept) -->
   <script>
     async function fetchAltruPrice() {
       try {
         const res = await fetch("https://api.dexscreener.com/latest/dex/pairs/bsc/0x5a59F6581EF65099bE92B491c9B36B4a66727707");
         const data = await res.json();
         const price = parseFloat(data.pair.priceUsd);
-        document.getElementById("altruPrice").innerText = `$${price.toFixed(8)}`;
+        const el = document.getElementById("altruPrice");
+        if (el) el.innerText = `$${price.toFixed(8)}`;
       } catch (e) {
         console.error("Error fetching ALTRU price:", e);
       }
     }
     fetchAltruPrice();
     setInterval(fetchAltruPrice, 15000);
+  </script>
+
+  <!-- ethers.js + widget logic -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script>
+  (async function(){
+    const PRESALE_ADDRESS = "0x4D3F586Dc66f41a05d36F960121E2C7F1a5Ab64c";
+    const ALTRU_ADDRESS   = "0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E";
+    const USDT_ADDRESS    = "0x55d398326f99059fF775485246999027B3197955";
+    const FEED_ADDRESS    = "0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE"; // BNB/USD
+
+    const PRESALE_ABI = [
+      "event BoughtWithBNB(address indexed buyer, uint256 usdtWei, uint256 amountALTRU, uint256 paidBNB)",
+      "event BoughtWithUSDT(address indexed buyer, uint256 usdtWei, uint256 amountALTRU)",
+      "function rateUSDT() view returns (uint256)",
+      "function hardCapTokens() view returns (uint256)",
+      "function soldTokens() view returns (uint256)",
+      "function paused() view returns (bool)",
+      "function buyWithBNB() payable",
+      "function buyWithUSDT(uint256 usdtWei)"
+    ];
+    const ERC20_ABI = [
+      "function balanceOf(address) view returns (uint256)",
+      "function approve(address spender, uint256 amount) returns (bool)",
+      "function allowance(address owner, address spender) view returns (uint256)",
+      "function decimals() view returns (uint8)"
+    ];
+    const FEED_ABI = [
+      "function latestRoundData() view returns (uint80,int256,uint256,uint256,uint80)",
+      "function decimals() view returns (uint8)"
+    ];
+
+    const $  = id => document.getElementById(id);
+    const ok = m => { const s=$('status'); if(!s) return; s.style.color='#6aff9f'; s.textContent=m; };
+    const er = m => { const s=$('status'); if(!s) return; s.style.color='crimson'; s.textContent=m; console.error(m); };
+    const fmt = (v,d=18)=>{ try{return ethers.utils.formatUnits(v,d)}catch{return String(v)} };
+    const toBN = ethers.BigNumber.from;
+
+    if(!window.ethereum){ er('Please install MetaMask'); return; }
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
+    const signer  = provider.getSigner();
+
+    const presale = new ethers.Contract(PRESALE_ADDRESS, PRESALE_ABI, signer);
+    const altru   = new ethers.Contract(ALTRU_ADDRESS,   ERC20_ABI, provider);
+    const usdt    = new ethers.Contract(USDT_ADDRESS,    ERC20_ABI, signer);
+    const feed    = new ethers.Contract(FEED_ADDRESS,    FEED_ABI,  provider);
+
+    // Indicators
+    const net = await provider.getNetwork();
+    const acct = await signer.getAddress();
+    if($('netName'))  $('netName').textContent = net.name || 'BSC';
+    if($('chainId'))  $('chainId').textContent = net.chainId;
+    if($('account'))  $('account').textContent = acct;
+    if($('contractAddr')) $('contractAddr').textContent = PRESALE_ADDRESS;
+
+    let RATE = await presale.rateUSDT();
+
+    async function refreshStats(){
+      try{
+        const [cap,sold,bal,rd,dec] = await Promise.all([
+          presale.hardCapTokens(),
+          presale.soldTokens(),
+          altru.balanceOf(PRESALE_ADDRESS),
+          feed.latestRoundData(),
+          feed.decimals()
+        ]);
+        if($('rateUSDT')) $('rateUSDT').textContent = RATE.toString();
+        if($('cap'))      $('cap').textContent  = Intl.NumberFormat('en-US').format(+fmt(cap));
+        if($('sold'))     $('sold').textContent = Intl.NumberFormat('en-US').format(+fmt(sold));
+        if($('balance'))  $('balance').textContent = Intl.NumberFormat('en-US').format(+fmt(bal));
+        const bnbUsd = Number(rd[1]) / (10 ** Number(dec));
+        if($('bnbUsd')) $('bnbUsd').textContent = `$${bnbUsd.toLocaleString('en-US',{maximumFractionDigits:2})} / BNB`;
+      }catch(e){ console.warn('refresh failed', e); }
+    }
+    await refreshStats();
+
+    // Live updates via events + fallback polling
+    try{
+      presale.on('BoughtWithBNB', async ()=>{ await refreshStats(); });
+      presale.on('BoughtWithUSDT', async ()=>{ await refreshStats(); });
+    }catch(e){ console.warn('event attach failed', e); }
+    provider.on('block', (n)=>{ if(n%6===0) refreshStats(); });
+
+    // Wallet changes
+    if(window.ethereum){
+      window.ethereum.on('accountsChanged', ()=>location.reload());
+      window.ethereum.on('chainChanged',   ()=>location.reload());
+    }
+
+    // Actions
+    const parseFloatSafe = (v)=>{ const n = Number(v); return isFinite(n)?n:0; };
+
+    // Max BNB: fill input with (balance - gas buffer)
+    const bnbInput = $('bnbAmount');
+    const maxBNB   = $('maxBNB');
+    const buyBNB   = $('buyBNB');
+
+    if(maxBNB) maxBNB.onclick = async ()=>{
+      try{
+        const bal = await provider.getBalance(acct);
+        const buffer = ethers.utils.parseEther("0.0005");
+        const spend = bal.gt(buffer)? bal.sub(buffer): ethers.constants.Zero;
+        if(bnbInput) bnbInput.value = fmt(spend,18);
+        ok('Max BNB filled (minus gas buffer).');
+      }catch(e){ er(e.message || 'Failed to read BNB balance'); }
+    };
+
+    if(buyBNB) buyBNB.onclick = async ()=>{
+      try{
+        const val = parseFloatSafe(bnbInput?.value || '0');
+        if(!val || val<=0) return er('Enter BNB amount');
+        const tx = await presale.buyWithBNB({ value: ethers.utils.parseEther(String(val)) });
+        await tx.wait();
+        ok('Success: bought with BNB');
+        await refreshStats();
+      }catch(e){ er(e?.data?.message || e.message || 'BNB transaction failed'); }
+    };
+
+    // USDT: buy by USDT amount
+    const usdtAmt  = $('usdtAmount');
+    const maxUSDT  = $('maxUSDT');
+    const buyUSDa  = $('buyUSDT_amount');
+
+    if(maxUSDT) maxUSDT.onclick = async ()=>{
+      try{
+        const dec = await usdt.decimals(); // USDT on BSC is 18
+        const bal = await usdt.balanceOf(acct);
+        const human = fmt(bal, dec);
+        if(usdtAmt) usdtAmt.value = human;
+
+        // Also prefill ALTRU equivalent
+        const usdtWei  = ethers.utils.parseUnits(human, dec);
+        const altruWei = usdtWei.mul(RATE);
+        const altruEl  = $('altruAmount');
+        if(altruEl) altruEl.value = ethers.utils.formatUnits(altruWei, 18);
+        ok('Max USDT filled (and ALTRU equivalent).');
+      }catch(e){ er(e.message || 'Failed to read USDT balance'); }
+    };
+
+    if(buyUSDa) buyUSDa.onclick = async ()=>{
+      try{
+        const dec = await usdt.decimals();
+        const amt = parseFloatSafe(usdtAmt?.value || '0');
+        if(!amt || amt<=0) return er('Enter USDT amount');
+        const usdtWei = ethers.utils.parseUnits(String(amt), dec);
+
+        const allowance = await usdt.allowance(acct, PRESALE_ADDRESS);
+        if(allowance.lt(usdtWei)){
+          const txA = await usdt.approve(PRESALE_ADDRESS, usdtWei);
+          await txA.wait();
+        }
+        const tx = await presale.buyWithUSDT(usdtWei);
+        await tx.wait();
+        ok(`Success: bought with ${amt} USDT`);
+        await refreshStats();
+      }catch(e){ er(e?.data?.message || e.message || 'USDT transaction failed'); }
+    };
+
+    // USDT: buy targeting ALTRU amount
+    const altruAmt = $('altruAmount');
+    const buyUSDTb = $('buyUSDT_altru');
+
+    if(buyUSDTb) buyUSDTb.onclick = async ()=>{
+      try{
+        const a = parseFloatSafe(altruAmt?.value || '0');
+        if(!a || a<=0) return er('Enter ALTRU amount');
+
+        const altruWei = ethers.utils.parseUnits(String(a), 18);
+        const rateBN   = toBN(RATE.toString());
+        const usdtWei  = altruWei.add(rateBN.sub(1)).div(rateBN); // ceil
+
+        const allowance = await usdt.allowance(acct, PRESALE_ADDRESS);
+        if(allowance.lt(usdtWei)){
+          const txA = await usdt.approve(PRESALE_ADDRESS, usdtWei);
+          await txA.wait();
+        }
+        const tx = await presale.buyWithUSDT(usdtWei);
+        await tx.wait();
+        ok(`Success: bought ${a} ALTRU with USDT`);
+        await refreshStats();
+      }catch(e){ er(e?.data?.message || e.message || 'USDT transaction failed'); }
+    };
+
+  })();
   </script>
 </body>
 </html>
