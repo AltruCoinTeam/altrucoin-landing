@@ -115,9 +115,7 @@
     /* mobile menu */
     .drawer{display:none}
     .drawer.open{display:block}
-    .drawer .menu{
-      flex-direction:column;align-items:flex-start;padding:10px 0;
-    }
+    .drawer .menu{flex-direction:column;align-items:flex-start;padding:10px 0;}
     .drawer a{padding:10px 12px;width:100%}
 
     /* ====== Hero ====== */
@@ -196,6 +194,29 @@
     .toast .title{font-weight:700;margin-right:6px}
     .toast .close{margin-left:auto;background:transparent;border:0;cursor:pointer;color:var(--text)}
 
+    /* ====== Network Warning Banner ====== */
+    .net-warn{
+      display:none;
+      background:linear-gradient(180deg, rgba(239,68,68,.12), rgba(239,68,68,.04));
+      border:1px solid rgba(239,68,68,.35);
+      color:#fff;
+      padding:14px;
+      border-radius:12px;
+      margin:14px 0;
+    }
+    html[data-theme="light"] .net-warn{color:#7a0e0e}
+
+    /* ====== Last Purchases ====== */
+    .activity-table{width:100%;border-collapse:separate;border-spacing:0 8px}
+    .activity-row{
+      background:var(--bg-1);
+      border:1px solid var(--border);
+      border-radius:12px;
+      overflow:hidden;
+    }
+    .activity-row td{padding:10px 12px}
+    .tag{display:inline-block;padding:4px 8px;border:1px solid var(--border);border-radius:999px;font-size:.82rem}
+
     /* ====== Responsive ====== */
     @media (max-width: 980px){
       .menu{display:none}
@@ -226,6 +247,7 @@
         <a href="#chart">Chart</a>
         <a href="#roadmap">Roadmap</a>
         <a href="#community">Community</a>
+        <a href="#activity">Last purchases</a>
         <a href="#faq">FAQ</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -245,6 +267,7 @@
         <a href="#chart">Chart</a>
         <a href="#roadmap">Roadmap</a>
         <a href="#community">Community</a>
+        <a href="#activity">Last purchases</a>
         <a href="#faq">FAQ</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -266,6 +289,14 @@
         </div>
       </div>
       <div class="hero-card">
+        <!-- Network warning banner -->
+        <div id="netWarning" class="net-warn">
+          ⚠️ You are connected to <b><span id="wrongNetName">Unknown</span></b>. Please switch to <b>BNB Smart Chain (BSC)</b>.
+          <div class="row" style="margin-top:8px">
+            <button id="switchToBsc">🔁 Switch to BSC</button>
+          </div>
+        </div>
+
         <div class="row" style="margin-bottom:10px">
           <span class="pill"><strong>Network:</strong> <span id="netName" class="nowrap">&nbsp;—&nbsp;</span> (<span id="chainId">—</span>)</span>
           <span class="pill"><strong>Account:</strong> <span id="account" class="addr">—</span></span>
@@ -436,6 +467,17 @@
         <a class="cta" href="https://t.me/AltrucoinGroup" target="_blank">📢 Telegram Channel</a>
         <a class="cta" href="https://t.me/AltrucoinChat" target="_blank">💬 Telegram Chat</a>
         <button onclick="addToken()" class="cta primary">🦊 Add $ALTRU to MetaMask</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Last Purchases ====== -->
+  <section id="activity" data-aos="fade-up">
+    <div class="container">
+      <div class="section-header"><h2>Last purchases</h2></div>
+      <div class="card">
+        <div class="muted" style="margin-bottom:10px">Live updates (latest 5)</div>
+        <div class="stack-16" id="lastPurchases"><!-- rows injected here --></div>
       </div>
     </div>
   </section>
@@ -694,14 +736,63 @@
     const usdt    = new ethers.Contract(USDT_ADDRESS,    ERC20_ABI, signer);
     const feed    = new ethers.Contract(FEED_ADDRESS,    FEED_ABI,  provider);
 
-    // Indicators
+    // Indicators + network check
     const net = await provider.getNetwork();
     const acct = await signer.getAddress();
-    if($('netName'))  $('netName').textContent = net.name || 'BSC';
-    if($('chainId'))  $('chainId').textContent = net.chainId;
+    const chainIdDec = Number(net.chainId);
+    const isBsc = chainIdDec === 56;
+
+    if($('netName'))  $('netName').textContent = net.name || (isBsc?'BSC':'Unknown');
+    if($('chainId'))  $('chainId').textContent = chainIdDec;
     if($('account'))  $('account').textContent = acct;
     if($('contractAddr')) $('contractAddr').textContent = PRESALE_ADDRESS;
 
+    const warn = $('netWarning');
+    if(!isBsc && warn){
+      $('wrongNetName').textContent = net.name || `Chain ${chainIdDec}`;
+      warn.style.display = 'block';
+    }
+
+    async function switchToBsc(){
+      try{
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x38' }] // 56
+        });
+        ok('Switched to BSC.');
+        location.reload();
+      }catch(e){
+        if(e?.code === 4902){
+          try{
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: '0x38',
+                chainName: 'BNB Smart Chain',
+                nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+                rpcUrls: ['https://bsc-dataseed.binance.org'],
+                blockExplorerUrls: ['https://bscscan.com']
+              }]
+            });
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x38' }]
+            });
+            ok('BSC added & switched.');
+            location.reload();
+          }catch(e2){
+            console.error(e2);
+            er(e2?.message || 'Failed to add/switch to BSC.');
+          }
+        }else{
+          console.error(e);
+          er(e?.message || 'Failed to switch network.');
+        }
+      }
+    }
+    $('switchToBsc')?.addEventListener('click', switchToBsc);
+
+    // RATE & stats
     let RATE = await presale.rateUSDT();
 
     function numFmt(n, max=0){
@@ -719,7 +810,6 @@
           feed.decimals()
         ]);
 
-        // Animated numbers
         const rateEl = $('rateUSDT');
         if(rateEl){ animateNumber(rateEl, Number(RATE.toString()), {format:(x)=>numFmt(x,0)}); }
 
@@ -734,10 +824,110 @@
     }
     await refreshStats();
 
+    // ---- Last Purchases (seed + live) ----
+    const activityEl = $('lastPurchases');
+    const activity = []; // newest first
+
+    function addrShort(a){ return a ? (a.slice(0,6)+'…'+a.slice(-4)) : '—'; }
+    function tsFmt(ts){
+      try{
+        const d = new Date(ts);
+        return d.toLocaleString([], {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'});
+      }catch{ return '—'; }
+    }
+    function renderActivity(){
+      if(!activityEl) return;
+      activityEl.innerHTML = '';
+      if(activity.length===0){
+        const empty = document.createElement('div');
+        empty.className = 'muted';
+        empty.textContent = 'No purchases yet.';
+        activityEl.appendChild(empty);
+        return;
+      }
+      activity.slice(0,5).forEach(item=>{
+        const row = document.createElement('div');
+        row.className = 'activity-row';
+        row.innerHTML = `
+          <table class="activity-table"><tbody>
+            <tr>
+              <td style="width:16ch"><span class="muted">${tsFmt(item.time)}</span></td>
+              <td style="width:18ch"><span class="tag">${item.kind}</span></td>
+              <td style="min-width:20ch"><span class="addr">${addrShort(item.buyer)}</span></td>
+              <td><strong>${numFmt(item.altru, 0)}</strong> ALTRU</td>
+              <td class="muted">${item.kind==='BNB' ? `${item.bnb} BNB` : `${item.usdt} USDT`}</td>
+            </tr>
+          </tbody></table>
+        `;
+        activityEl.appendChild(row);
+      });
+    }
+
+    // Seed recent events (last ~50k blocks)
+    try{
+      const tip = await provider.getBlockNumber();
+      const from = Math.max(1, tip - 50000);
+
+      const e1 = await presale.queryFilter(presale.filters.BoughtWithBNB(), from, tip);
+      const e2 = await presale.queryFilter(presale.filters.BoughtWithUSDT(), from, tip);
+
+      const all = e1.concat(e2).sort((a,b)=> b.blockNumber - a.blockNumber).slice(0,5);
+      for (const ev of all){
+        if(ev.event === 'BoughtWithBNB'){
+          const [buyer, usdtWei, amountALTRU, paidBNB] = ev.args;
+          const blk = await provider.getBlock(ev.blockNumber);
+          activity.push({
+            kind:'BNB',
+            time: (blk.timestamp || 0) * 1000,
+            buyer: String(buyer),
+            altru: Number(ethers.utils.formatUnits(amountALTRU, 18)),
+            bnb:   Number(ethers.utils.formatUnits(paidBNB, 18)).toFixed(5)
+          });
+        }else if(ev.event === 'BoughtWithUSDT'){
+          const [buyer, usdtWei, amountALTRU] = ev.args;
+          const blk = await provider.getBlock(ev.blockNumber);
+          activity.push({
+            kind:'USDT',
+            time: (blk.timestamp || 0) * 1000,
+            buyer: String(buyer),
+            altru: Number(ethers.utils.formatUnits(amountALTRU, 18)),
+            usdt:  Number(ethers.utils.formatUnits(usdtWei, 18)).toFixed(2)
+          });
+        }
+      }
+      renderActivity();
+    }catch(e){
+      console.warn('seed activity failed', e);
+    }
+
     // Live updates via events + fallback polling
     try{
-      presale.on('BoughtWithBNB', async ()=>{ await refreshStats(); ok('Purchase confirmed (BNB).'); });
-      presale.on('BoughtWithUSDT', async ()=>{ await refreshStats(); ok('Purchase confirmed (USDT).'); });
+      presale.on('BoughtWithBNB', async (buyer, usdtWei, amountALTRU, paidBNB, ev)=>{
+        const blk = await provider.getBlock(ev.blockNumber);
+        activity.unshift({
+          kind:'BNB',
+          time: (blk.timestamp || 0)*1000,
+          buyer: String(buyer),
+          altru: Number(ethers.utils.formatUnits(amountALTRU, 18)),
+          bnb:   Number(ethers.utils.formatUnits(paidBNB, 18)).toFixed(5)
+        });
+        renderActivity();
+        await refreshStats();
+        ok('Purchase confirmed (BNB).');
+      });
+      presale.on('BoughtWithUSDT', async (buyer, usdtWei, amountALTRU, ev)=>{
+        const blk = await provider.getBlock(ev.blockNumber);
+        activity.unshift({
+          kind:'USDT',
+          time: (blk.timestamp || 0)*1000,
+          buyer: String(buyer),
+          altru: Number(ethers.utils.formatUnits(amountALTRU, 18)),
+          usdt:  Number(ethers.utils.formatUnits(usdtWei, 18)).toFixed(2)
+        });
+        renderActivity();
+        await refreshStats();
+        ok('Purchase confirmed (USDT).');
+      });
     }catch(e){ console.warn('event attach failed', e); }
     provider.on('block', (n)=>{ if(n%6===0) refreshStats(); });
 
@@ -747,7 +937,7 @@
       window.ethereum.on('chainChanged',   ()=>location.reload());
     }
 
-    // Actions
+    // ---- Buy actions ----
     const parseFloatSafe = (v)=>{ const n = Number(v); return isFinite(n)?n:0; };
 
     // Max BNB
