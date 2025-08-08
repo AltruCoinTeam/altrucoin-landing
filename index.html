@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="auto">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -23,292 +23,579 @@
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-    :root {
-      --primary: #00c2ff;
-      --secondary: #7d00ff;
-      --background: #181c2f;
-      --text: #ffffff;
-      --muted: rgba(255,255,255,0.08);
-      --border: #2a3350;
+    /* ====== Design System ====== */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    :root{
+      /* dark */
+      --primary:#00c2ff;
+      --secondary:#7d00ff;
+
+      --bg-0:#0e1224;
+      --bg-1:#121735;
+      --bg-2:#0b1024;
+
+      --text:#ffffff;
+      --text-muted:#cfe4ff;
+      --border:rgba(255,255,255,.14);
+      --surface-grad:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      --shadow:0 10px 30px rgba(0,0,0,.25);
+      --ring:0 0 0 3px rgba(0,194,255,.35);
+
+      --radius:14px;
+      --radius-lg:20px;
+      --pad:16px;
+      --maxw:1120px;
     }
-    * { margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth; }
-    body {
-      font-family:'Inter',sans-serif;
-      background:var(--background);
+
+    /* light theme */
+    html[data-theme="light"]{
+      --bg-0:#f6f8fc;
+      --bg-1:#ffffff;
+      --bg-2:#f0f4ff;
+
+      --text:#0b1226;
+      --text-muted:#374151;
+      --border:rgba(0,0,0,.12);
+      --surface-grad:linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.01));
+      --shadow:0 10px 30px rgba(16,24,40,.08);
+      --ring:0 0 0 3px rgba(0,194,255,.35);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',sans-serif;
+      background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(125,0,255,.20), transparent 60%),
+        radial-gradient(900px 500px at -10% 10%, rgba(0,194,255,.16), transparent 60%),
+        var(--bg-0);
       color:var(--text);
+      line-height:1.55;
     }
-    header {
-      background:linear-gradient(135deg, var(--primary), var(--secondary));
-      padding:1.5rem;
-      text-align:center;
+    html[data-theme="light"] body{
+      background:
+        radial-gradient(1100px 560px at 85% -10%, rgba(125,0,255,.10), transparent 60%),
+        radial-gradient(820px 480px at -10% 10%, rgba(0,194,255,.10), transparent 60%),
+        var(--bg-0);
     }
-    nav a {
-      color:#fff;
-      margin:0 12px;
-      text-decoration:none;
-      font-weight:600;
+
+    a{color:var(--primary);text-decoration:none}
+    a:hover{text-decoration:underline}
+    :focus-visible{outline:none;box-shadow:var(--ring);border-radius:12px}
+
+    /* ====== Layout ====== */
+    .container{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+    section{padding:64px 0;scroll-margin-top:84px}
+    .section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px;gap:12px}
+    h1,h2,h3{letter-spacing:.2px}
+    h1{font-size:clamp(2rem,4vw,3.25rem);line-height:1.1}
+    h2{font-size:clamp(1.5rem,2.4vw,2rem)}
+    h3{font-size:1.15rem}
+
+    /* ====== Header ====== */
+    header{
+      position:sticky;top:0;z-index:50;
+      backdrop-filter:saturate(160%) blur(10px);
+      background:linear-gradient(to right, color-mix(in oklab, var(--bg-0) 85%, transparent), color-mix(in oklab, var(--bg-1) 85%, transparent));
+      border-bottom:1px solid var(--border);
     }
-    .hero {
-      padding:100px 20px;
-      text-align:center;
-      background:linear-gradient(135deg, var(--primary), var(--secondary));
+    .nav{height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+    .brand-badge{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));box-shadow:0 6px 18px rgba(0,194,255,.25), inset 0 0 20px rgba(255,255,255,.15)}
+    .menu{display:flex;gap:8px;flex-wrap:wrap}
+    .menu a{color:var(--text);opacity:.85;text-decoration:none;font-weight:600;padding:8px 10px;border-radius:10px}
+    .menu a:hover,.menu a.active{background:color-mix(in oklab, var(--border) 30%, transparent)}
+    .controls{display:flex;align-items:center;gap:8px}
+
+    /* burger */
+    .burger{display:none; width:40px;height:40px;border:1px solid var(--border);border-radius:12px;background:transparent;cursor:pointer}
+    .burger span{display:block;width:22px;height:2px;background:var(--text);margin:5px auto;border-radius:1px}
+
+    /* mobile menu */
+    .drawer{display:none}
+    .drawer.open{display:block}
+    .drawer .menu{
+      flex-direction:column;align-items:flex-start;padding:10px 0;
     }
-    .hero h1 { font-size:3rem; margin-bottom:1rem; }
-    .hero p { font-size:1.2rem; max-width:600px; margin:0 auto 2rem; }
-    .cta-button {
-      display:inline-block;
-      padding:0.75rem 1.5rem;
-      background:var(--muted);
-      border:2px solid #fff;
-      border-radius:12px;
-      color:#fff;
-      font-weight:700;
-      text-decoration:none;
-      transition:background 0.3s,transform 0.3s;
+    .drawer a{padding:10px 12px;width:100%}
+
+    /* ====== Hero ====== */
+    .hero{
+      padding:70px 0 40px;
+      background:
+        linear-gradient(135deg, color-mix(in oklab, var(--primary) 18%, transparent), color-mix(in oklab, var(--secondary) 12%, transparent)),
+        linear-gradient(180deg, color-mix(in oklab, var(--text) 8%, transparent), transparent 40%);
+      border-bottom:1px solid var(--border);
     }
-    .cta-button:hover {
-      background:rgba(255,255,255,0.15);
-      transform:translateY(-2px);
+    .hero-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center}
+    .hero-card{
+      background:var(--surface-grad);
+      border:1px solid var(--border);border-radius:var(--radius-lg);
+      padding:22px;box-shadow:var(--shadow)
     }
-    section {
-      padding:60px 20px;
-      max-width:900px;
-      margin:auto;
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+    .pill{
+      display:inline-flex;gap:8px;align-items:center;
+      padding:8px 12px;border:1px solid var(--border);border-radius:999px;
+      background:color-mix(in oklab, var(--bg-2) 80%, transparent);color:var(--text-muted);font-size:.9rem
     }
-    section h2 {
-      font-size:2rem;
-      margin-bottom:1rem;
-      border-bottom:2px solid var(--primary);
-      padding-bottom:8px;
+    .price-pill{font-weight:700}
+
+    .cta{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:12px 16px;border-radius:12px;font-weight:700;text-decoration:none;border:1px solid var(--border)
     }
-    .tokenomics {
-      display:flex;
-      flex-wrap:wrap;
-      gap:20px;
-      justify-content:center;
+    .cta.primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#00111a;border:0}
+    .cta.ghost{background:transparent;color:var(--text)}
+
+    /* ====== Cards / Grids ====== */
+    .card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius);padding:var(--pad);box-shadow:var(--shadow)}
+    html[data-theme="light"] .card{background:var(--bg-1)}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    .stack-16{display:grid;gap:16px}
+    .muted{color:var(--text-muted);opacity:.95}
+
+    /* ====== Tokenomics ====== */
+    .tokenomics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:12px}
+    .tokenomics .cell{text-align:center;padding:18px;border-radius:14px;background:var(--surface-grad);border:1px solid var(--border)}
+    .big-num{font-size:1.6rem;font-weight:700}
+
+    /* ====== Forms & Buttons ====== */
+    input{
+      padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--bg-2);color:var(--text);min-width:150px
     }
-    .tokenomics div {
-      background:var(--muted);
-      padding:20px;
-      border-radius:10px;
-      text-align:center;
-      flex:1 1 220px;
-    }
-    .pill{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:#12162a;color:#b9c3e6}
+    input::placeholder{color:#94a3b8}
+    button{padding:12px 14px;border:0;border-radius:12px;background:var(--primary);color:#00111a;font-weight:700;cursor:pointer}
+    button.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+    /* ====== Liquidity ====== */
+    .lock{background:linear-gradient(180deg,color-mix(in oklab,var(--primary) 12%, transparent), color-mix(in oklab, var(--text) 2%, transparent));border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:var(--radius);padding:18px}
+
+    /* ====== FAQ ====== */
+    .faq ul{display:grid;gap:12px}
+    .faq li{list-style:none}
+    .faq .q{display:block;width:100%;text-align:left;background:transparent;border:1px solid var(--border);color:var(--text);padding:14px;border-radius:12px;font-weight:600}
+    .faq .a{padding:12px 14px;border:1px dashed var(--border);border-radius:12px;margin-top:8px;background:color-mix(in oklab, var(--bg-2) 80%, transparent)}
+
+    /* ====== Footer ====== */
+    footer{margin-top:64px;padding:28px 0;border-top:1px solid var(--border);background:linear-gradient(180deg, color-mix(in oklab, var(--text) 2%, transparent), transparent)}
+
+    /* ====== Utilities ====== */
     .addr{font-family:ui-monospace,Menlo,Consolas;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
-    .card{background:#12162a;border:1px solid var(--border);border-radius:16px;padding:16px;margin:12px 0}
-    input{padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#0d1225;color:#fff;min-width:160px}
-    button{padding:10px 14px;border:0;border-radius:10px;background:var(--primary);color:#00111a;font-weight:700;cursor:pointer}
-    button.ghost{background:transparent;color:#fff;border:1px solid var(--border)}
-    .muted{opacity:.75}
-    footer {
-      text-align:center;
-      padding:40px;
-      background:#111;
-      color:#aaa;
+    .center{text-align:center}
+    .nowrap{white-space:nowrap}
+
+    /* ====== Toasts ====== */
+    .toasts{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:100}
+    .toast{min-width:260px;max-width:94vw;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-1);box-shadow:var(--shadow);display:flex;gap:10px;align-items:flex-start}
+    .toast.success{border-color:rgba(34,197,94,.35)}
+    .toast.error{border-color:rgba(239,68,68,.35)}
+    .toast .title{font-weight:700;margin-right:6px}
+    .toast .close{margin-left:auto;background:transparent;border:0;cursor:pointer;color:var(--text)}
+
+    /* ====== Responsive ====== */
+    @media (max-width: 980px){
+      .menu{display:none}
+      .burger{display:inline-block}
+      .hero-wrap{grid-template-columns:1fr}
+      .tokenomics{grid-template-columns:repeat(2,1fr)}
+      .grid-3{grid-template-columns:1fr}
+      .grid-2{grid-template-columns:1fr}
     }
-    ul { padding-left:1.2rem; }
-    .copy-button {
-      margin-top:10px;
-      background:#333;
-      color:#fff;
-      border:none;
-      padding:6px 12px;
-      border-radius:6px;
-      cursor:pointer;
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none !important;transition:none !important}
     }
-    .copy-button:hover { background:#444; }
   </style>
 </head>
 <body>
+  <!-- ====== Header / Nav ====== -->
   <header>
-    <nav>
-      <a href="#about">About</a>
-      <a href="#tokenomics">Tokenomics</a>
-      <a href="#buy">Buy</a>
-      <a href="#chart">Chart</a>
-      <a href="#roadmap">Roadmap</a>
-      <a href="#community">Community</a>
-      <a href="#faq">FAQ</a>
-      <a href="#contact">Contact</a>
-    </nav>
+    <div class="container nav">
+      <div class="brand">
+        <span class="brand-badge" aria-hidden="true"></span>
+        <span>AltruCoin</span>
+      </div>
+
+      <nav class="menu" id="topMenu">
+        <a href="#about">About</a>
+        <a href="#tokenomics">Tokenomics</a>
+        <a href="#buy">Buy</a>
+        <a href="#chart">Chart</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#community">Community</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="controls">
+        <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="drawer">
+          <span></span><span></span><span></span>
+        </button>
+        <button id="themeToggle" class="cta ghost" aria-label="Toggle theme">🌓 Theme</button>
+      </div>
+    </div>
+    <div class="container drawer" id="drawer">
+      <nav class="menu">
+        <a href="#about">About</a>
+        <a href="#tokenomics">Tokenomics</a>
+        <a href="#buy">Buy</a>
+        <a href="#chart">Chart</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#community">Community</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
   </header>
 
+  <!-- ====== Hero ====== -->
   <section class="hero" data-aos="fade-up">
-    <h1>AltruCoin</h1>
-    <p>The Web3 Token of Altruism. Every transaction helps real people, animals, and the planet — transparently and on-chain.</p>
+    <div class="container hero-wrap">
+      <div>
+        <h1>The Web3 Token of Altruism</h1>
+        <p class="muted" style="max-width:640px;margin-top:10px">
+          Every transaction helps real people, animals, and the planet — transparently and on-chain.
+        </p>
+        <div class="hero-actions">
+          <a class="cta primary" href="#buy">Buy $ALTRU</a>
+          <a class="cta ghost" href="Whitepaper.pdf" target="_blank">📄 Whitepaper</a>
+          <span class="pill price-pill">ALTRU: <span id="altruPrice">—</span></span>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="row" style="margin-bottom:10px">
+          <span class="pill"><strong>Network:</strong> <span id="netName" class="nowrap">&nbsp;—&nbsp;</span> (<span id="chainId">—</span>)</span>
+          <span class="pill"><strong>Account:</strong> <span id="account" class="addr">—</span></span>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <div class="muted">Contract (Presale)</div>
+            <div id="contractAddr" class="addr" style="margin-top:6px">—</div>
+          </div>
+          <div class="card">
+            <div class="muted">BNB → USD (oracle)</div>
+            <div id="bnbUsd" style="margin-top:6px">—</div>
+          </div>
+          <div class="card">
+            <div class="muted">Rate</div>
+            <div id="rateUSDT" class="big-num" style="margin-top:6px">—</div>
+            <div class="muted" style="font-size:.9rem">ALTRU / 1 USDT</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
+  <!-- ====== About ====== -->
   <section id="about" data-aos="fade-up">
-    <h2>About</h2>
-    <p>AltruCoin is a Web3-powered cryptocurrency with a mission: to turn market activity into meaningful charitable impact. Every time someone trades the token, a fee is collected and distributed monthly:</p>
-    <ul>
-      <li><strong>50%</strong> — to verified charities (in USDT)</li>
-      <li><strong>25%</strong> — for development & audits</li>
-      <li><strong>25%</strong> — for token buybacks</li>
-    </ul>
-    <p>Built on BNB Smart Chain for low fees and speed. Token holders drive the mission through DAO voting. Upcoming: UAE foundation registration & AltruScan dashboard.</p>
-    <div style="margin-top: 20px; text-align: center;">
-      <a class="cta-button" href="Whitepaper.pdf" target="_blank">📄 View Whitepaper (PDF)</a>
+    <div class="container">
+      <div class="section-header">
+        <h2>About</h2>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <p>AltruCoin is a Web3-powered cryptocurrency with a mission: to turn market activity into meaningful charitable impact. Every time someone trades the token, a fee is collected and distributed monthly:</p>
+          <ul style="margin-top:10px;padding-left:1.1rem">
+            <li><strong>50%</strong> — to verified charities (in USDT)</li>
+            <li><strong>25%</strong> — for development & audits</li>
+            <li><strong>25%</strong> — for token buybacks</li>
+          </ul>
+          <p style="margin-top:10px">Built on BNB Smart Chain for low fees and speed. Token holders drive the mission through DAO voting. Upcoming: UAE foundation registration & AltruScan dashboard.</p>
+          <div style="margin-top:14px">
+            <a class="cta ghost" href="Whitepaper.pdf" target="_blank">📄 View Whitepaper (PDF)</a>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Quick Facts</h3>
+          <div class="stack-16" style="margin-top:10px">
+            <div class="row"><span class="pill">Fast & low fees</span><span class="pill">Transparent</span><span class="pill">Deflationary</span></div>
+            <div class="row"><span class="pill">DAO-ready</span><span class="pill">On-chain impact</span></div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
+  <!-- ====== Tokenomics ====== -->
   <section id="tokenomics" data-aos="fade-up">
-    <h2>Tokenomics</h2>
-    <p>All trading fee revenue is distributed monthly:</p>
-    <div class="tokenomics">
-      <div><strong>50%</strong><br/>Charity (USDT)</div>
-      <div><strong>25%</strong><br/>Project & Dev</div>
-      <div><strong>25%</strong><br/>Token Buyback</div>
-    </div>
-    <p style="margin-top:2rem;">Token allocation:</p>
-    <div class="tokenomics">
-      <div><strong>20%</strong><br/>Private Sale</div>
-      <div><strong>30%</strong><br/>Public Launch</div>
-      <div><strong>10%</strong><br/>Team (vested)</div>
-      <div><strong>40%</strong><br/>Reserve & Ecosystem</div>
+    <div class="container">
+      <div class="section-header">
+        <h2>Tokenomics</h2>
+      </div>
+
+      <p class="muted">All trading fee revenue is distributed monthly:</p>
+      <div class="tokenomics">
+        <div class="cell"><div class="big-num">50%</div>Charity (USDT)</div>
+        <div class="cell"><div class="big-num">25%</div>Project & Dev</div>
+        <div class="cell"><div class="big-num">25%</div>Token Buyback</div>
+        <div class="cell">
+          <div class="muted">Status</div>
+          <div style="display:flex;gap:14px;justify-content:center;margin-top:6px">
+            <span class="pill">Sold: <span id="sold">—</span></span>
+            <span class="pill">Cap: <span id="cap">—</span></span>
+            <span class="pill">In contract: <span id="balance">—</span></span>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top:18px" class="muted">Token allocation:</p>
+      <div class="tokenomics">
+        <div class="cell"><div class="big-num">20%</div>Private Sale</div>
+        <div class="cell"><div class="big-num">30%</div>Public Launch</div>
+        <div class="cell"><div class="big-num">10%</div>Team (vested)</div>
+        <div class="cell"><div class="big-num">40%</div>Reserve & Ecosystem</div>
+      </div>
     </div>
   </section>
 
-  <!-- BUY SECTION (updated, keeps same anchor) -->
+  <!-- ====== Buy ====== -->
   <section id="buy" data-aos="fade-up">
-    <h2>Buy $ALTRU</h2>
-
-    <!-- Network / Account pills -->
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 14px 0">
-      <div class="pill"><strong>Network:</strong>&nbsp;<span id="netName">—</span>&nbsp;(<span id="chainId">—</span>)</div>
-      <div class="pill"><strong>Account:</strong>&nbsp;<span id="account" class="addr">—</span></div>
-    </div>
-
-    <div class="card">
-      <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between">
-        <div><b>Presale:</b> <span id="contractAddr" class="addr">—</span></div>
-        <div><b>BNB→USD (oracle):</b> <span id="bnbUsd">—</span></div>
+    <div class="container">
+      <div class="section-header">
+        <h2>Buy $ALTRU</h2>
+        <a class="cta ghost" href="https://pancakeswap.finance/swap?outputCurrency=0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E" target="_blank">🔥 Buy on PancakeSwap</a>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(3,minmax(160px,1fr));gap:12px;margin-top:8px">
-        <div><b>Rate</b><br><span id="rateUSDT">—</span> ALTRU / 1 USDT</div>
-        <div><b>Sold</b><br><span id="sold">—</span> / <span id="cap">—</span> ALTRU</div>
-        <div><b>ALTRU in contract</b><br><span id="balance">—</span></div>
-      </div>
-    </div>
 
-    <div class="card">
-      <h3>Buy with BNB</h3>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px">
-        <input id="bnbAmount" type="number" step="0.0001" placeholder="BNB amount"/>
-        <button id="maxBNB" class="ghost">Max BNB</button>
-        <button id="buyBNB">Buy</button>
-      </div>
-      <div class="muted" style="margin-top:6px">Send BNB; tokens are calculated on‑chain via Chainlink BNB/USD × rate.</div>
-    </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Buy with BNB</h3>
+          <div class="row" style="margin-top:10px">
+            <input id="bnbAmount" type="number" step="0.0001" placeholder="BNB amount"/>
+            <button id="maxBNB" class="ghost">Max BNB</button>
+            <button id="buyBNB">Buy</button>
+          </div>
+          <div class="muted" style="margin-top:8px">Send BNB; tokens are calculated on-chain via Chainlink BNB/USD × rate.</div>
+        </div>
 
-    <div class="card">
-      <h3>Buy with USDT</h3>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px">
-        <input id="usdtAmount" type="number" step="0.01" placeholder="USDT amount"/>
-        <button id="maxUSDT" class="ghost">Max USDT</button>
-        <button id="buyUSDT_amount">Buy (USDT)</button>
+        <div class="card">
+          <h3>Buy with USDT</h3>
+          <div class="row" style="margin-top:10px">
+            <input id="usdtAmount" type="number" step="0.01" placeholder="USDT amount"/>
+            <button id="maxUSDT" class="ghost">Max USDT</button>
+            <button id="buyUSDT_amount">Buy (USDT)</button>
+          </div>
+          <div class="muted" style="margin:10px 0 6px">Or target an ALTRU amount (auto-computes USDT):</div>
+          <div class="row">
+            <input id="altruAmount" type="number" step="100000" value="100000" min="100000" placeholder="ALTRU amount"/>
+            <button id="buyUSDT_altru">Buy (ALTRU)</button>
+          </div>
+          <div class="muted" style="margin-top:8px">We auto-approve if allowance is insufficient.</div>
+        </div>
       </div>
-      <div class="muted" style="margin:8px 0">Or target an ALTRU amount (auto‑computes USDT):</div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px">
-        <input id="altruAmount" type="number" step="100000" value="100000" min="100000" placeholder="ALTRU amount"/>
-        <button id="buyUSDT_altru">Buy (ALTRU)</button>
-      </div>
-      <div class="muted" style="margin-top:6px">We auto‑approve if allowance is insufficient.</div>
-    </div>
-
-    <p id="status" class="muted" style="margin-top:10px;"></p>
-
-    <p style="margin-top:16px">You can buy AltruCoin directly on PancakeSwap:</p>
-    <div style="text-align:center; margin: 20px 0;">
-      <a class="cta-button" href="https://pancakeswap.finance/swap?outputCurrency=0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E" target="_blank">🔥 Buy on PancakeSwap</a>
     </div>
   </section>
 
+  <!-- ====== Chart ====== -->
   <section id="chart" data-aos="fade-up">
-    <h2>Live Price Chart</h2>
-    <div style="width:100%; max-width:800px; margin:auto;">
-      <iframe src="https://dexscreener.com/bsc/0x5a59F6581EF65099bE92B491c9B36B4a66727707?embed=1&theme=dark"
-              width="100%" height="500" style="border:0;" allowfullscreen></iframe>
-    </div>
-  </section>
-
-  <section id="roadmap" data-aos="fade-up">
-    <h2>Roadmap</h2>
-    <ul>
-      <li>✅ Token deployment</li>
-      <li>🚀 PancakeSwap listing</li>
-      <li>🗳 DAO governance</li>
-      <li>📊 Charity dashboard</li>
-      <li>🏛 UAE foundation</li>
-    </ul>
-  </section>
-
-  <section id="community" data-aos="fade-up">
-    <h2>Community</h2>
-    <p>Join our growing movement and connect with others who believe in blockchain-powered altruism.</p>
-    <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:30px;">
-      <a class="cta-button" href="https://t.me/AltrucoinGroup" target="_blank">📢 Telegram Channel</a>
-      <a class="cta-button" href="https://t.me/AltrucoinChat" target="_blank">💬 Telegram Chat</a>
-    </div>
-    <div style="text-align:center;margin-top:20px;">
-      <button onclick="addToken()" class="cta-button">🦊 Add $ALTRU to MetaMask</button>
-    </div>
-  </section>
-
-  <!-- Moved OUT of <style>: Liquidity Locked card -->
-  <div style="background: #1f1f2e; border-left: 5px solid #00c2ff; padding: 20px; margin: 40px auto; max-width: 800px; border-radius: 12px;" data-aos="fade-up">
-    <h3 style="color: #00c2ff; margin-bottom: 10px;">🔒 Liquidity Locked</h3>
-    <p style="line-height: 1.6; color: #ddd; font-size: 1rem;">
-      To ensure long-term trust and prevent rug pulls, the ALTRU/BNB liquidity on PancakeSwap has been locked via PinkLock.
-    </p>
-    <a href="https://www.pinksale.finance/pinklock/bsc/record/1340541" target="_blank" style="display: inline-block; margin-top: 12px; background: #00c2ff; color: #000; padding: 10px 20px; font-weight: 600; border-radius: 8px; text-decoration: none;">
-      🔐 View Lock on PinkSale
-    </a>
-  </div>
-
-  <section id="faq" data-aos="fade-up">
-    <h2>FAQ</h2>
-    <ul>
-      <li><strong>What is AltruCoin?</strong><br/>A crypto token on BNB Smart Chain where every trade supports real charitable causes.</li>
-      <li><strong>How are transaction fees used?</strong><br/>5% fee breakdown:<br/>– 2.5% to charities (in USDT)<br/>– 2% to development & liquidity<br/>– 0.5% auto-burn</li>
-      <li><strong>Is the token safe?</strong><br/>Yes — contract is open-source, verifiable, audited soon.</li>
-      <li><strong>How to add ALTRU?</strong><br/>Click the 🦊 Add to MetaMask button above.</li>
-    </ul>
-  </section>
-
-  <section id="contact" data-aos="fade-up">
-    <h2>Contact</h2>
-    <p>📩 For support, partnerships, or media inquiries — reach out to us:</p>
-    <div style="text-align:center; margin-top:20px;">
-      <a href="mailto:support@altrucoin.org" class="cta-button">support@altrucoin.org</a>
-    </div>
-    <div style="text-align:center; margin-top:40px;">
-      <h3>❤️ Support / Donate</h3>
-      <p style="word-break:break-all; font-size:1rem;">0x7c76AA8d29F1F075846ED04446197f4fda047c4d</p>
-      <button class="copy-button" onclick="navigator.clipboard.writeText('0x7c76AA8d29F1F075846ED04446197f4fda047c4d')">📋 Copy Address</button>
-      <div style="margin-top:20px;">
-        <img src="donation-qr.png" alt="QR Code" style="max-width:180px;" />
-        <p style="font-size:0.9rem; opacity:0.7;">Scan via MetaMask / Trust Wallet</p>
+    <div class="container">
+      <div class="section-header">
+        <h2>Live Price Chart</h2>
       </div>
-      <p style="margin-top:20px; font-size:0.9rem; opacity:0.6;">
-        You can send USDT (BEP-20), BNB or any supported BEP-20 token.<br/>
-        Always verify the network and address before sending.
-      </p>
-      <p>
-        <a href="https://bscscan.com/address/0x7c76AA8d29F1F075846ED04446197f4fda047c4d" target="_blank" style="color:var(--primary); text-decoration:underline;">
-          🔍 View on BscScan
-        </a>
-      </p>
+      <div class="card">
+        <iframe
+          src="https://dexscreener.com/bsc/0x5a59F6581EF65099bE92B491c9B36B4a66727707?embed=1&theme=dark"
+          width="100%" height="520" style="border:0;border-radius:12px" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Roadmap ====== -->
+  <section id="roadmap" data-aos="fade-up">
+    <div class="container">
+      <div class="section-header"><h2>Roadmap</h2></div>
+      <div class="grid-3">
+        <div class="card"><strong>✅ Token deployment</strong><br><span class="muted">Contract live & verified</span></div>
+        <div class="card"><strong>🚀 PancakeSwap listing</strong><br><span class="muted">Liquidity & trading</span></div>
+        <div class="card"><strong>🗳 DAO governance</strong><br><span class="muted">Community-driven votes</span></div>
+        <div class="card"><strong>📊 Charity dashboard</strong><br><span class="muted">AltruScan transparency</span></div>
+        <div class="card"><strong>🏛 UAE foundation</strong><br><span class="muted">Legal structure</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Liquidity Locked ====== -->
+  <section data-aos="fade-up">
+    <div class="container">
+      <div class="lock">
+        <h3 style="margin-bottom:8px; color: var(--primary)">🔒 Liquidity Locked</h3>
+        <p class="muted">To ensure long-term trust and prevent rug pulls, the ALTRU/BNB liquidity on PancakeSwap has been locked via PinkLock.</p>
+        <a href="https://www.pinksale.finance/pinklock/bsc/record/1340541" target="_blank" class="cta" style="margin-top:12px;display:inline-flex">🔐 View Lock on PinkSale</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Community ====== -->
+  <section id="community" data-aos="fade-up">
+    <div class="container">
+      <div class="section-header"><h2>Community</h2></div>
+      <p>Join our growing movement and connect with others who believe in blockchain-powered altruism.</p>
+      <div class="row center" style="justify-content:center;margin:16px 0 28px">
+        <a class="cta" href="https://t.me/AltrucoinGroup" target="_blank">📢 Telegram Channel</a>
+        <a class="cta" href="https://t.me/AltrucoinChat" target="_blank">💬 Telegram Chat</a>
+        <button onclick="addToken()" class="cta primary">🦊 Add $ALTRU to MetaMask</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== FAQ ====== -->
+  <section id="faq" data-aos="fade-up" class="faq">
+    <div class="container">
+      <div class="section-header"><h2>FAQ</h2></div>
+      <ul>
+        <li>
+          <button class="q" onclick="toggleFaq(this)">What is AltruCoin?</button>
+          <div class="a" hidden>A crypto token on BNB Smart Chain where every trade supports real charitable causes.</div>
+        </li>
+        <li>
+          <button class="q" onclick="toggleFaq(this)">How are transaction fees used?</button>
+          <div class="a" hidden>5% fee breakdown:<br>– 2.5% to charities (in USDT)<br>– 2% to development & liquidity<br>– 0.5% auto-burn</div>
+        </li>
+        <li>
+          <button class="q" onclick="toggleFaq(this)">Is the token safe?</button>
+          <div class="a" hidden>Yes — contract is open-source, verifiable, audited soon.</div>
+        </li>
+        <li>
+          <button class="q" onclick="toggleFaq(this)">How to add ALTRU?</button>
+          <div class="a" hidden>Use the 🦊 Add to MetaMask button in the Community section.</div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ====== Contact / Donate ====== -->
+  <section id="contact" data-aos="fade-up">
+    <div class="container">
+      <div class="section-header"><h2>Contact</h2></div>
+      <p>📩 For support, partnerships, or media inquiries — reach out to us:</p>
+      <div class="center" style="margin-top:12px">
+        <a href="mailto:support@altrucoin.org" class="cta">support@altrucoin.org</a>
+      </div>
+
+      <div class="card" style="margin-top:24px">
+        <h3>❤️ Support / Donate</h3>
+        <p style="word-break:break-all; font-size:1rem;margin-top:6px">0x7c76AA8d29F1F075846ED04446197f4fda047c4d</p>
+        <button class="cta" style="margin-top:8px" onclick="navigator.clipboard.writeText('0x7c76AA8d29F1F075846ED04446197f4fda047c4d')">📋 Copy Address</button>
+        <div style="margin-top:14px">
+          <img src="donation-qr.png" alt="Donation QR" style="max-width:180px;border-radius:12px;border:1px solid var(--border)" />
+          <p class="muted" style="font-size:.9rem;margin-top:6px">Scan via MetaMask / Trust Wallet</p>
+        </div>
+        <p class="muted" style="margin-top:12px">
+          You can send USDT (BEP-20), BNB or any supported BEP-20 token.<br/>
+          Always verify the network and address before sending.
+        </p>
+        <p style="margin-top:6px">
+          <a href="https://bscscan.com/address/0x7c76AA8d29F1F075846ED04446197f4fda047c4d" target="_blank">🔍 View on BscScan</a>
+        </p>
+      </div>
     </div>
   </section>
 
   <footer>
-    &copy; 2025 AltruCoin — Built with purpose. Powered by people.<br/>
-    📩 Contact us: <a href="mailto:support@altrucoin.org">support@altrucoin.org</a><br/>
-    ❤️ Donate: 0x7c76AA8d29F1F075846ED04446197f4fda047c4d
+    <div class="container center">
+      &copy; 2025 AltruCoin — Built with purpose. Powered by people.<br/>
+      📩 <a href="mailto:support@altrucoin.org">support@altrucoin.org</a> • ❤️ 0x7c76AA8d29F1F075846ED04446197f4fda047c4d
+    </div>
   </footer>
+
+  <!-- ====== Toasts container ====== -->
+  <div class="toasts" id="toasts" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ====== Scripts ====== -->
+  <script>
+    // ---- Theme (auto + manual toggle with localStorage) ----
+    const root = document.documentElement;
+    const THEME_KEY = 'altru-theme';
+    function applyTheme(mode){ // 'light' | 'dark' | 'auto'
+      root.setAttribute('data-theme', mode);
+      localStorage.setItem(THEME_KEY, mode);
+      if(mode==='auto'){
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.setAttribute('data-theme', prefersDark?'dark':'light');
+      }
+    }
+    (function initTheme(){
+      const saved = localStorage.getItem(THEME_KEY) || 'auto';
+      applyTheme(saved);
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if(localStorage.getItem(THEME_KEY)==='auto') applyTheme('auto');
+      });
+      document.getElementById('themeToggle')?.addEventListener('click', ()=>{
+        const cur = document.documentElement.getAttribute('data-theme');
+        const next = cur==='dark' ? 'light' : 'dark';
+        applyTheme(next);
+      });
+    })();
+
+    // ---- Mobile drawer ----
+    const burger = document.getElementById('burger');
+    const drawer = document.getElementById('drawer');
+    burger?.addEventListener('click', ()=>{
+      const open = drawer.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open?'true':'false');
+    });
+
+    // ---- Active menu on scroll ----
+    const links = [...document.querySelectorAll('#topMenu a, #drawer a')];
+    const targets = [...new Set(links.map(a => a.getAttribute('href')).filter(Boolean))]
+      .map(sel => document.querySelector(sel));
+    function setActive(){
+      const y = window.scrollY + 120;
+      let idx = 0;
+      targets.forEach((sec,i)=>{ if(sec && sec.offsetTop <= y) idx = i;});
+      document.querySelectorAll('#topMenu a').forEach((a,i)=>a.classList.toggle('active', i===idx));
+    }
+    window.addEventListener('scroll', setActive, {passive:true});
+    setActive();
+
+    // ---- FAQ toggle ----
+    function toggleFaq(btn){
+      const ans = btn.nextElementSibling;
+      const isHidden = ans.hasAttribute('hidden');
+      document.querySelectorAll('.faq .a').forEach(a=>a.setAttribute('hidden',''));
+      if(isHidden) ans.removeAttribute('hidden');
+      setTimeout(()=>ans.scrollIntoView({behavior:'smooth',block:'start'}),100);
+    }
+    window.toggleFaq = toggleFaq;
+
+    // ---- Toasts ----
+    function showToast(message, type='info', title=''){
+      const wrap = document.getElementById('toasts');
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.innerHTML = `
+        <div>
+          ${title?`<div class="title">${title}</div>`:''}
+          <div>${message}</div>
+        </div>
+        <button class="close" aria-label="Close">✕</button>
+      `;
+      wrap.appendChild(t);
+      const closer = t.querySelector('.close');
+      const timer = setTimeout(()=>{ t.remove(); }, 4500);
+      closer.onclick = ()=>{ clearTimeout(timer); t.remove(); };
+    }
+
+    // ---- Number animation (odometer-lite) ----
+    function animateNumber(el, target, opts={}){
+      if(!el) return;
+      const {duration=700, format=(n)=>n.toLocaleString('en-US')} = opts;
+      const start = Number(el.dataset.value || 0);
+      const end = Number(target);
+      const diff = end - start;
+      const t0 = performance.now();
+      function step(t){
+        const k = Math.min(1, (t - t0)/duration);
+        const eased = 1 - Math.pow(1-k, 3);
+        const val = start + diff*eased;
+        el.textContent = format(val);
+        if(k<1) requestAnimationFrame(step); else el.dataset.value = String(end);
+      }
+      requestAnimationFrame(step);
+    }
+  </script>
 
   <script>
     async function addToken() {
@@ -325,19 +612,21 @@
             }
           }
         });
-        if (wasAdded) console.log('Token added!');
-        else console.log('User rejected token addition');
+        if (wasAdded) showToast('Token added to MetaMask.', 'success', 'MetaMask');
+        else showToast('User cancelled token add.', 'error', 'MetaMask');
       } catch (error) {
         console.error(error);
+        showToast(error?.message || 'Failed to add token.', 'error', 'MetaMask');
       }
     }
+    window.addToken = addToken;
   </script>
 
   <!-- AOS script -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>AOS.init();</script>
 
-  <!-- Dexscreener price fetch (kept) -->
+  <!-- Dexscreener price fetch (hero price pill) -->
   <script>
     async function fetchAltruPrice() {
       try {
@@ -345,7 +634,7 @@
         const data = await res.json();
         const price = parseFloat(data.pair.priceUsd);
         const el = document.getElementById("altruPrice");
-        if (el) el.innerText = `$${price.toFixed(8)}`;
+        if (el) el.textContent = `$${price.toFixed(8)}`;
       } catch (e) {
         console.error("Error fetching ALTRU price:", e);
       }
@@ -385,12 +674,16 @@
     ];
 
     const $  = id => document.getElementById(id);
-    const ok = m => { const s=$('status'); if(!s) return; s.style.color='#6aff9f'; s.textContent=m; };
-    const er = m => { const s=$('status'); if(!s) return; s.style.color='crimson'; s.textContent=m; console.error(m); };
-    const fmt = (v,d=18)=>{ try{return ethers.utils.formatUnits(v,d)}catch{return String(v)} };
-    const toBN = ethers.BigNumber.from;
+    const fmtUnits = (v,d=18)=>{ try{return ethers.utils.formatUnits(v,d)}catch{return String(v)} };
 
-    if(!window.ethereum){ er('Please install MetaMask'); return; }
+    if(!window.ethereum){
+      showToast('Please install MetaMask to continue.', 'error', 'Wallet');
+      return;
+    }
+
+    // Toast helpers
+    const ok = (m) => showToast(m, 'success');
+    const er = (m) => showToast(m, 'error');
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send('eth_requestAccounts', []);
@@ -411,6 +704,11 @@
 
     let RATE = await presale.rateUSDT();
 
+    function numFmt(n, max=0){
+      const v = Number(n)||0;
+      return v.toLocaleString('en-US',{maximumFractionDigits:max});
+    }
+
     async function refreshStats(){
       try{
         const [cap,sold,bal,rd,dec] = await Promise.all([
@@ -420,10 +718,16 @@
           feed.latestRoundData(),
           feed.decimals()
         ]);
-        if($('rateUSDT')) $('rateUSDT').textContent = RATE.toString();
-        if($('cap'))      $('cap').textContent  = Intl.NumberFormat('en-US').format(+fmt(cap));
-        if($('sold'))     $('sold').textContent = Intl.NumberFormat('en-US').format(+fmt(sold));
-        if($('balance'))  $('balance').textContent = Intl.NumberFormat('en-US').format(+fmt(bal));
+
+        // Animated numbers
+        const rateEl = $('rateUSDT');
+        if(rateEl){ animateNumber(rateEl, Number(RATE.toString()), {format:(x)=>numFmt(x,0)}); }
+
+        const capEl = $('cap'), soldEl = $('sold'), balEl = $('balance');
+        if(capEl)  animateNumber(capEl,  +fmtUnits(cap),  {format:(x)=>numFmt(x,0)});
+        if(soldEl) animateNumber(soldEl, +fmtUnits(sold), {format:(x)=>numFmt(x,0)});
+        if(balEl)  animateNumber(balEl,  +fmtUnits(bal),  {format:(x)=>numFmt(x,0)});
+
         const bnbUsd = Number(rd[1]) / (10 ** Number(dec));
         if($('bnbUsd')) $('bnbUsd').textContent = `$${bnbUsd.toLocaleString('en-US',{maximumFractionDigits:2})} / BNB`;
       }catch(e){ console.warn('refresh failed', e); }
@@ -432,8 +736,8 @@
 
     // Live updates via events + fallback polling
     try{
-      presale.on('BoughtWithBNB', async ()=>{ await refreshStats(); });
-      presale.on('BoughtWithUSDT', async ()=>{ await refreshStats(); });
+      presale.on('BoughtWithBNB', async ()=>{ await refreshStats(); ok('Purchase confirmed (BNB).'); });
+      presale.on('BoughtWithUSDT', async ()=>{ await refreshStats(); ok('Purchase confirmed (USDT).'); });
     }catch(e){ console.warn('event attach failed', e); }
     provider.on('block', (n)=>{ if(n%6===0) refreshStats(); });
 
@@ -446,7 +750,7 @@
     // Actions
     const parseFloatSafe = (v)=>{ const n = Number(v); return isFinite(n)?n:0; };
 
-    // Max BNB: fill input with (balance - gas buffer)
+    // Max BNB
     const bnbInput = $('bnbAmount');
     const maxBNB   = $('maxBNB');
     const buyBNB   = $('buyBNB');
@@ -456,7 +760,7 @@
         const bal = await provider.getBalance(acct);
         const buffer = ethers.utils.parseEther("0.0005");
         const spend = bal.gt(buffer)? bal.sub(buffer): ethers.constants.Zero;
-        if(bnbInput) bnbInput.value = fmt(spend,18);
+        if(bnbInput) bnbInput.value = fmtUnits(spend,18);
         ok('Max BNB filled (minus gas buffer).');
       }catch(e){ er(e.message || 'Failed to read BNB balance'); }
     };
@@ -479,9 +783,9 @@
 
     if(maxUSDT) maxUSDT.onclick = async ()=>{
       try{
-        const dec = await usdt.decimals(); // USDT on BSC is 18
+        const dec = await usdt.decimals(); // USDT on BSC is often 18
         const bal = await usdt.balanceOf(acct);
-        const human = fmt(bal, dec);
+        const human = fmtUnits(bal, dec);
         if(usdtAmt) usdtAmt.value = human;
 
         // Also prefill ALTRU equivalent
@@ -522,7 +826,7 @@
         if(!a || a<=0) return er('Enter ALTRU amount');
 
         const altruWei = ethers.utils.parseUnits(String(a), 18);
-        const rateBN   = toBN(RATE.toString());
+        const rateBN   = ethers.BigNumber.from(RATE.toString());
         const usdtWei  = altruWei.add(rateBN.sub(1)).div(rateBN); // ceil
 
         const allowance = await usdt.allowance(acct, PRESALE_ADDRESS);
