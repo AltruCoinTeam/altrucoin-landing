@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AltruCoin — Self-Audit & Transparency</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="AltruCoin self-audit, on-chain transparency, fees, wallets, liquidity lock, sales contract." />
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    :root{
+      --bg:#0e1222; --card:#161a2e; --text:#e9ecf1; --muted:#9aa3b2;
+      --primary:#00c2ff; --accent:#7d00ff; --ok:#18c965; --warn:#ffaa00; --bad:#ff4d4f;
+      --border:rgba(255,255,255,0.08);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:linear-gradient(180deg,#0b0f1e,#0f1430 40%,#0e1222 100%);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+    a{color:var(--primary);text-decoration:none}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    header{
+      background:linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius:20px;padding:28px;margin:24px 0;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.25)
+    }
+    header h1{margin:0 0 6px 0;font-size:28px}
+    header p{margin:0;opacity:.9}
+    .topnav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.12);color:#fff}
+    .btn:hover{transform:translateY(-1px)}
+    .grid{display:grid;gap:18px}
+    @media(min-width:900px){.grid{grid-template-columns:1.2fr .8fr}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+    h2{font-size:20px;margin:0 0 10px;border-bottom:1px dashed var(--border);padding-bottom:8px}
+    h3{font-size:16px;margin:18px 0 8px;color:#dfe6ff}
+    .kvs{display:grid;grid-template-columns:1fr;gap:10px}
+    @media(min-width:700px){.kvs{grid-template-columns:1fr 1fr}}
+    .kv{background:#0f1430;border:1px solid var(--border);border-radius:12px;padding:12px}
+    .kv b{display:block;font-size:12px;color:var(--muted);letter-spacing:.2px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:13px;word-break:break-all}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid var(--border);background:#0f1430}
+    .ok{color:#0ef08a}.warn{color:#ffc74d}.bad{color:#ff8082}
+    .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:14px}
+    tr:last-child td{border-bottom:0}
+    .muted{color:var(--muted)}
+    footer{opacity:.7;text-align:center;margin:28px 0 8px}
+    .badge{font-size:12px;padding:4px 8px;border-radius:8px;background:#192042;border:1px solid var(--border)}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .note{font-size:13px;color:var(--muted)}
+    .hl{color:#93e1ff}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>AltruCoin — Self-Audit & Transparency</h1>
+      <p>Network: <b>BNB Smart Chain</b> · Report date: <span id="reportDate"></span></p>
+      <div class="topnav">
+        <a class="btn" href="./">← Back to main site</a>
+        <a class="btn" href="https://bscscan.com/token/0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E" target="_blank">Token on BscScan</a>
+        <a class="btn" href="https://dexscreener.com/bsc/0x5a59F6581EF65099bE92B491c9B36B4a66727707" target="_blank">Chart</a>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Overview</h2>
+        <div class="kvs">
+          <div class="kv">
+            <b>Token</b>
+            <div class="mono">AltruCoin (ALTRU)</div>
+          </div>
+          <div class="kv">
+            <b>Decimals</b>
+            <div>18</div>
+          </div>
+          <div class="kv">
+            <b>Total Supply</b>
+            <div>21,000,000,000 ALTRU</div>
+          </div>
+          <div class="kv">
+            <b>Owner</b>
+            <div class="mono">0xa92719d0792c8180b8B047A80bB1D282B112F34E</div>
+          </div>
+          <div class="kv">
+            <b>Token Address</b>
+            <div class="mono">0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E</div>
+            <div class="btns">
+              <a class="btn" href="https://bscscan.com/token/0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E" target="_blank">View on BscScan</a>
+              <a class="btn" href="https://pancakeswap.finance/swap?outputCurrency=0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E" target="_blank">Buy on PancakeSwap</a>
+              <a class="btn" href="https://dexscreener.com/bsc/0x5a59F6581EF65099bE92B491c9B36B4a66727707" target="_blank">Chart (DexScreener)</a>
+            </div>
+          </div>
+          <div class="kv">
+            <b>Sales Contract</b>
+            <div class="mono">0xcBA251D373468198aaF33aD7942608003f7E0a99</div>
+            <div class="btns">
+              <a class="btn" href="https://bscscan.com/address/0xcBA251D373468198aaF33aD7942608003f7E0a99#code" target="_blank">Sales on BscScan</a>
+            </div>
+          </div>
+        </div>
+
+        <h3>Fees (fixed)</h3>
+        <div class="row">
+          <span class="pill">Total: <b>5%</b></span>
+          <span class="pill">Charity: <b>2.5%</b></span>
+          <span class="pill">Project: <b>2.0%</b></span>
+          <span class="pill">Burn: <b>0.5%</b></span>
+          <span class="pill ok">Honeypot: <b>No</b></span>
+        </div>
+
+        <h3>Wallets</h3>
+        <table>
+          <tr><th>Role</th><th>Address</th></tr>
+          <tr><td>Charity</td><td class="mono">0x7A37175E2C27679e1Ad6b648080AA3E5CB35bd86</td></tr>
+          <tr><td>Project</td><td class="mono">0x7A37175E2C27679e1Ad6b648080AA3E5CB35bd86</td></tr>
+          <tr><td>Burn</td><td class="mono">0x000000000000000000000000000000000000dEaD</td></tr>
+        </table>
+        <p class="note">Note: owner &amp; contract may be fee-exempt for operations; user swaps taxed per tokenomics.</p>
+      </section>
+
+      <aside class="card">
+        <h2>Status</h2>
+        <div class="kvs" style="grid-template-columns:1fr">
+          <div class="kv"><b>Trading</b><div><span class="badge ok">enabled</span></div></div>
+          <div class="kv"><b>Pause</b><div><span class="badge ok">not paused</span></div></div>
+          <div class="kv"><b>Ownership renounced</b><div><span class="badge warn">No</span></div></div>
+          <div class="kv"><b>Proxy / Upgradeable</b><div><span class="badge ok">No</span></div></div>
+          <div class="kv"><b>Blacklist</b><div><span class="badge ok">No</span></div></div>
+        </div>
+
+        <h3>Exclusions</h3>
+        <table>
+          <tr><th>Address</th><th>What</th><th>Excluded</th></tr>
+          <tr><td class="mono">0x10ED43C718714eb63d5aA57B78B54704E256024E</td><td>Router v2</td><td><span class="ok">true</span></td></tr>
+          <tr><td class="mono">0x5a59F6581EF65099bE92B491c9B36B4a66727707</td><td>LP ALTRU/BNB</td><td><span class="ok">true</span></td></tr>
+          <tr><td class="mono">Owner / Contract</td><td>Ops / Internal</td><td><span class="ok">true</span></td></tr>
+        </table>
+      </aside>
+    </div>
+
+    <section class="card">
+      <h2>Liquidity & Locks</h2>
+      <div class="kvs">
+        <div class="kv">
+          <b>LP Token (Cake-LP)</b>
+          <div class="mono">0x5a59F6581EF65099bE92B491c9B36B4a66727707</div>
+          <div class="btns">
+            <a class="btn" href="https://bscscan.com/address/0x5a59F6581EF65099bE92B491c9B36B4a66727707" target="_blank">LP on BscScan</a>
+          </div>
+        </div>
+        <div class="kv">
+          <b>Lock</b>
+          <div>PinkLock (BNB Chain)</div>
+          <div class="btns">
+            <a class="btn" href="https://www.pinksale.finance/pinklock/bsc/record/1340541" target="_blank">View Lock</a>
+          </div>
+          <div class="note">Add exact unlock date/terms once finalized.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Sales Contract — Fixed Price</h2>
+      <div class="kvs" style="grid-template-columns:1fr 1fr">
+        <div class="kv">
+          <b>Price per 1 ALTRU (BNB)</b>
+          <div class="mono">1,315,789,473,684 wei</div>
+          <div class="note">Based on: 100,000 ALTRU = 1 USDT; 1 BNB = 760 USDT</div>
+        </div>
+        <div class="kv">
+          <b>Price per 1 ALTRU (USDT units)</b>
+          <div class="mono">10,000,000,000,000</div>
+          <div class="note">USDT on BSC uses 18 decimals here (min units)</div>
+        </div>
+      </div>
+      <div class="btns">
+        <a class="btn" href="https://bscscan.com/address/0xcBA251D373468198aaF33aD7942608003f7E0a99#writeContract" target="_blank">Manage (Write Contract)</a>
+        <a class="btn" href="https://bscscan.com/address/0xcBA251D373468198aaF33aD7942608003f7E0a99#readContract" target="_blank">Read Contract</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Checks Performed</h2>
+      <ul>
+        <li>Open-source verified on BscScan (token & sales)</li>
+        <li>No mint, no proxy, no blacklist</li>
+        <li>Trading enabled; contract not paused</li>
+        <li>Router/LP/owner/contract fee-exempt to avoid DEX frictions</li>
+        <li>Liquidity locked (PinkLock)</li>
+        <li>Test swaps & transfers successful</li>
+      </ul>
+      <h3>Recommendations</h3>
+      <ul>
+        <li>Publish monthly charity transfers with tx links</li>
+        <li>Keep LP lock and vesting/treasury on multisig (Gnosis Safe)</li>
+        <li>Optional: external audit + static analysis report (Slither/Mythril)</li>
+        <li>Optional: auto-pricing sales v3 via DEX oracles / Chainlink</li>
+      </ul>
+    </section>
+
+    <footer>
+      © 2025 AltruCoin — Transparency First · <a href="mailto:support@altrucoin.org">support@altrucoin.org</a>
+    </footer>
+  </div>
+
+  <script>
+    // set today's date
+    document.getElementById('reportDate').textContent =
+      new Date().toLocaleDateString('en-GB', {year:'numeric', month:'short', day:'2-digit'});
+  </script>
+</body>
+</html>
