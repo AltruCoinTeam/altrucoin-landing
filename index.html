@@ -27,41 +27,20 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
     :root{
-      /* dark */
-      --primary:#00c2ff;
-      --secondary:#7d00ff;
-
-      --bg-0:#0e1224;
-      --bg-1:#121735;
-      --bg-2:#0b1024;
-
-      --text:#ffffff;
-      --text-muted:#cfe4ff;
+      --primary:#00c2ff; --secondary:#7d00ff;
+      --bg-0:#0e1224; --bg-1:#121735; --bg-2:#0b1024;
+      --text:#ffffff; --text-muted:#cfe4ff;
       --border:rgba(255,255,255,.14);
       --surface-grad:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      --shadow:0 10px 30px rgba(0,0,0,.25);
-      --ring:0 0 0 3px rgba(0,194,255,.35);
-
-      --radius:14px;
-      --radius-lg:20px;
-      --pad:16px;
-      --maxw:1120px;
+      --shadow:0 10px 30px rgba(0,0,0,.25); --ring:0 0 0 3px rgba(0,194,255,.35);
+      --radius:14px; --radius-lg:20px; --pad:16px; --maxw:1120px;
     }
-
-    /* light theme */
     html[data-theme="light"]{
-      --bg-0:#f6f8fc;
-      --bg-1:#ffffff;
-      --bg-2:#f0f4ff;
-
-      --text:#0b1226;
-      --text-muted:#374151;
-      --border:rgba(0,0,0,.12);
+      --bg-0:#f6f8fc; --bg-1:#ffffff; --bg-2:#f0f4ff;
+      --text:#0b1226; --text-muted:#374151; --border:rgba(0,0,0,.12);
       --surface-grad:linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.01));
-      --shadow:0 10px 30px rgba(16,24,40,.08);
-      --ring:0 0 0 3px rgba(0,194,255,.35);
+      --shadow:0 10px 30px rgba(16,24,40,.08); --ring:0 0 0 3px rgba(0,194,255,.35);
     }
-
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{
@@ -115,7 +94,7 @@
     /* mobile menu */
     .drawer{display:none}
     .drawer.open{display:block}
-    .drawer .menu{flex-direction:column;align-items:flex-start;padding:10px 0;}
+    .drawer .menu{flex-direction:column;align-items:flex-start;padding:10px 0}
     .drawer a{padding:10px 12px;width:100%}
 
     /* ====== Hero ====== */
@@ -217,6 +196,11 @@
     .activity-row td{padding:10px 12px}
     .tag{display:inline-block;padding:4px 8px;border:1px solid var(--border);border-radius:999px;font-size:.82rem}
 
+    /* Charity Impact */
+    .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .kpi .box{padding:16px;border:1px solid var(--border);border-radius:14px;background:var(--surface-grad);text-align:center}
+    .kpi .val{font-size:1.6rem;font-weight:700;margin-top:4px}
+
     /* ====== Responsive ====== */
     @media (max-width: 980px){
       .menu{display:none}
@@ -225,6 +209,7 @@
       .tokenomics{grid-template-columns:repeat(2,1fr)}
       .grid-3{grid-template-columns:1fr}
       .grid-2{grid-template-columns:1fr}
+      .kpi{grid-template-columns:1fr}
     }
     @media (prefers-reduced-motion: reduce){
       *{animation:none !important;transition:none !important}
@@ -247,12 +232,14 @@
         <a href="#chart">Chart</a>
         <a href="#roadmap">Roadmap</a>
         <a href="#community">Community</a>
-        <a href="#activity">Last purchases</a>
+        <a href="#charity">Charity</a>
+        <a href="audit.html">Transparency</a>
         <a href="#faq">FAQ</a>
         <a href="#contact">Contact</a>
       </nav>
 
       <div class="controls">
+        <a href="audit.html" class="cta ghost" aria-label="Transparency Report">🧾 Transparency</a>
         <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="drawer">
           <span></span><span></span><span></span>
         </button>
@@ -267,7 +254,8 @@
         <a href="#chart">Chart</a>
         <a href="#roadmap">Roadmap</a>
         <a href="#community">Community</a>
-        <a href="#activity">Last purchases</a>
+        <a href="#charity">Charity</a>
+        <a href="audit.html">Transparency</a>
         <a href="#faq">FAQ</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -284,6 +272,7 @@
         </p>
         <div class="hero-actions">
           <a class="cta primary" href="#buy">Buy $ALTRU</a>
+          <a class="cta ghost" href="audit.html">🧾 Transparency Report</a>
           <a class="cta ghost" href="Whitepaper.pdf" target="_blank">📄 Whitepaper</a>
           <span class="pill price-pill">ALTRU: <span id="altruPrice">—</span></span>
         </div>
@@ -387,7 +376,10 @@
     <div class="container">
       <div class="section-header">
         <h2>Buy $ALTRU</h2>
-        <a class="cta ghost" href="https://pancakeswap.finance/swap?outputCurrency=0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E" target="_blank">🔥 Buy on PancakeSwap</a>
+        <div class="row">
+          <a class="cta ghost" href="audit.html">🧾 Transparency</a>
+          <a class="cta ghost" href="https://pancakeswap.finance/swap?outputCurrency=0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E" target="_blank">🔥 Buy on PancakeSwap</a>
+        </div>
       </div>
 
       <div class="grid-2">
@@ -477,7 +469,53 @@
       <div class="section-header"><h2>Last purchases</h2></div>
       <div class="card">
         <div class="muted" style="margin-bottom:10px">Live updates (latest 5)</div>
-        <div class="stack-16" id="lastPurchases"><!-- rows injected here --></div>
+        <div class="stack-16" id="lastPurchases">
+          <div class="muted">Listening…</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Charity impact ====== -->
+  <section id="charity" data-aos="fade-up">
+    <div class="container">
+      <div class="section-header"><h2>Charity impact</h2><span class="muted">Transparent on-chain</span></div>
+      <div class="card" id="charityCard" style="display:none">
+        <div class="kpi">
+          <div class="box">
+            <div class="muted">Tax → Charity</div>
+            <div class="val"><span id="charityTaxPct">—</span></div>
+          </div>
+          <div class="box">
+            <div class="muted">Total donated</div>
+            <div class="val"><span id="charityTotal">—</span></div>
+            <div class="muted" style="font-size:.9rem" id="charitySince">—</div>
+          </div>
+          <div class="box">
+            <div class="muted">Last month</div>
+            <div class="val"><span id="charityMonthly">—</span></div>
+          </div>
+        </div>
+        <div class="stack-16" style="margin-top:16px">
+          <h3>Last distributions</h3>
+          <div id="charityFeed" class="stack-16">
+            <div class="muted">Loading transfers…</div>
+          </div>
+          <div class="muted" id="charityNote" style="font-size:.9rem"></div>
+        </div>
+        <div class="stack-16" style="margin-top:16px">
+          <h3>Wallets (info)</h3>
+          <div class="activity-row">
+            <table class="activity-table"><tbody><tr>
+              <td><span class="muted">Charity wallet</span><br><span class="addr" id="charityAddrView"></span></td>
+              <td><span class="muted">Project wallet</span><br><span class="addr" id="projectAddrView"></span></td>
+              <td><span class="muted">Burn wallet</span><br><span class="addr" id="burnAddrView"></span></td>
+            </tr></tbody></table>
+          </div>
+        </div>
+      </div>
+      <div class="card" id="charityEmpty">
+        <div class="muted">Charity wallets are not configured yet. Add addresses to show live donations.</div>
       </div>
     </div>
   </section>
@@ -538,6 +576,7 @@
   <footer>
     <div class="container center">
       &copy; 2025 AltruCoin — Built with purpose. Powered by people.<br/>
+      🧾 <a href="audit.html">Transparency Report</a> •
       📩 <a href="mailto:support@altrucoin.org">support@altrucoin.org</a> • ❤️ 0x7c76AA8d29F1F075846ED04446197f4fda047c4d
     </div>
   </footer>
@@ -547,10 +586,10 @@
 
   <!-- ====== Scripts ====== -->
   <script>
-    // ---- Theme (auto + manual toggle with localStorage) ----
+    // ---- Theme (auto + manual toggle) ----
     const root = document.documentElement;
     const THEME_KEY = 'altru-theme';
-    function applyTheme(mode){ // 'light' | 'dark' | 'auto'
+    function applyTheme(mode){
       root.setAttribute('data-theme', mode);
       localStorage.setItem(THEME_KEY, mode);
       if(mode==='auto'){
@@ -581,13 +620,13 @@
 
     // ---- Active menu on scroll ----
     const links = [...document.querySelectorAll('#topMenu a, #drawer a')];
-    const targets = [...new Set(links.map(a => a.getAttribute('href')).filter(Boolean))]
+    const targets = [...new Set(links.map(a => a.getAttribute('href')).filter(h=>h && h.startsWith('#')))]
       .map(sel => document.querySelector(sel));
     function setActive(){
       const y = window.scrollY + 120;
       let idx = 0;
       targets.forEach((sec,i)=>{ if(sec && sec.offsetTop <= y) idx = i;});
-      document.querySelectorAll('#topMenu a').forEach((a,i)=>a.classList.toggle('active', i===idx));
+      document.querySelectorAll('#topMenu a').forEach((a,i)=>a.classList.toggle('active', targets[i] && i===idx));
     }
     window.addEventListener('scroll', setActive, {passive:true});
     setActive();
@@ -620,7 +659,7 @@
       closer.onclick = ()=>{ clearTimeout(timer); t.remove(); };
     }
 
-    // ---- Number animation (odometer-lite) ----
+    // ---- Number animation ----
     function animateNumber(el, target, opts={}){
       if(!el) return;
       const {duration=700, format=(n)=>n.toLocaleString('en-US')} = opts;
@@ -694,6 +733,15 @@
     const USDT_ADDRESS    = "0x55d398326f99059fF775485246999027B3197955";
     const FEED_ADDRESS    = "0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE"; // BNB/USD
 
+    /* ===== CONFIG: Wallets & Charity ===== */
+    const charityWallet = "0x7A37175E2C27679e1Ad6b648080AA3E5CB35bd86";
+    const projectWallet = "0x7A37175E2C27679e1Ad6b648080AA3E5CB35bd86";
+    const burnWallet    = "0x000000000000000000000000000000000000dEaD";
+
+    const CHARITY_RECIPIENTS = [ charityWallet ];
+    const CHARITY_START_BLOCK = 41000000; // TODO: replace with your real start block
+    const CHARITY_TAX_BPS = 250;
+
     const PRESALE_ABI = [
       "event BoughtWithBNB(address indexed buyer, uint256 usdtWei, uint256 amountALTRU, uint256 paidBNB)",
       "event BoughtWithUSDT(address indexed buyer, uint256 usdtWei, uint256 amountALTRU)",
@@ -705,10 +753,12 @@
       "function buyWithUSDT(uint256 usdtWei)"
     ];
     const ERC20_ABI = [
+      "event Transfer(address indexed from, address indexed to, uint256 value)",
       "function balanceOf(address) view returns (uint256)",
       "function approve(address spender, uint256 amount) returns (bool)",
       "function allowance(address owner, address spender) view returns (uint256)",
-      "function decimals() view returns (uint8)"
+      "function decimals() view returns (uint8)",
+      "function symbol() view returns (string)"
     ];
     const FEED_ABI = [
       "function latestRoundData() view returns (uint80,int256,uint256,uint256,uint80)",
@@ -717,13 +767,13 @@
 
     const $  = id => document.getElementById(id);
     const fmtUnits = (v,d=18)=>{ try{return ethers.utils.formatUnits(v,d)}catch{return String(v)} };
+    const short = (a)=> a?`${a.slice(0,6)}…${a.slice(-4)}`:'—';
+    const num = (n,max=0)=> (Number(n)||0).toLocaleString('en-US',{maximumFractionDigits:max});
 
     if(!window.ethereum){
       showToast('Please install MetaMask to continue.', 'error', 'Wallet');
       return;
     }
-
-    // Toast helpers
     const ok = (m) => showToast(m, 'success');
     const er = (m) => showToast(m, 'error');
 
@@ -790,14 +840,13 @@
         }
       }
     }
-    $('switchToBsc')?.addEventListener('click', switchToBsc);
+    document.getElementById('switchToBsc')?.addEventListener('click', switchToBsc);
 
     // RATE & stats
     let RATE = await presale.rateUSDT();
 
-    function numFmt(n, max=0){
-      const v = Number(n)||0;
-      return v.toLocaleString('en-US',{maximumFractionDigits:max});
+    function anim(el, v, max=0){
+      animateNumber(el, Number(v), {format:(x)=>num(x,max)});
     }
 
     async function refreshStats(){
@@ -811,12 +860,12 @@
         ]);
 
         const rateEl = $('rateUSDT');
-        if(rateEl){ animateNumber(rateEl, Number(RATE.toString()), {format:(x)=>numFmt(x,0)}); }
+        if(rateEl){ anim(rateEl, RATE.toString(), 0); }
 
         const capEl = $('cap'), soldEl = $('sold'), balEl = $('balance');
-        if(capEl)  animateNumber(capEl,  +fmtUnits(cap),  {format:(x)=>numFmt(x,0)});
-        if(soldEl) animateNumber(soldEl, +fmtUnits(sold), {format:(x)=>numFmt(x,0)});
-        if(balEl)  animateNumber(balEl,  +fmtUnits(bal),  {format:(x)=>numFmt(x,0)});
+        if(capEl)  anim(capEl,  +fmtUnits(cap), 0);
+        if(soldEl) anim(soldEl, +fmtUnits(sold), 0);
+        if(balEl)  anim(balEl,  +fmtUnits(bal), 0);
 
         const bnbUsd = Number(rd[1]) / (10 ** Number(dec));
         if($('bnbUsd')) $('bnbUsd').textContent = `$${bnbUsd.toLocaleString('en-US',{maximumFractionDigits:2})} / BNB`;
@@ -829,7 +878,7 @@
     const activity = []; // newest first
 
     function addrShort(a){ return a ? (a.slice(0,6)+'…'+a.slice(-4)) : '—'; }
-    function tsFmt(ts){
+    function tsFmtFromBlockTs(ts){
       try{
         const d = new Date(ts);
         return d.toLocaleString([], {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'});
@@ -851,10 +900,10 @@
         row.innerHTML = `
           <table class="activity-table"><tbody>
             <tr>
-              <td style="width:16ch"><span class="muted">${tsFmt(item.time)}</span></td>
+              <td style="width:16ch"><span class="muted">${tsFmtFromBlockTs(item.time)}</span></td>
               <td style="width:18ch"><span class="tag">${item.kind}</span></td>
               <td style="min-width:20ch"><span class="addr">${addrShort(item.buyer)}</span></td>
-              <td><strong>${numFmt(item.altru, 0)}</strong> ALTRU</td>
+              <td><strong>${num(item.altru, 0)}</strong> ALTRU</td>
               <td class="muted">${item.kind==='BNB' ? `${item.bnb} BNB` : `${item.usdt} USDT`}</td>
             </tr>
           </tbody></table>
@@ -863,7 +912,6 @@
       });
     }
 
-    // Seed recent events (last ~50k blocks)
     try{
       const tip = await provider.getBlockNumber();
       const from = Math.max(1, tip - 50000);
@@ -871,24 +919,28 @@
       const e1 = await presale.queryFilter(presale.filters.BoughtWithBNB(), from, tip);
       const e2 = await presale.queryFilter(presale.filters.BoughtWithUSDT(), from, tip);
 
-      const all = e1.concat(e2).sort((a,b)=> b.blockNumber - a.blockNumber).slice(0,5);
-      for (const ev of all){
+      const merged = e1.concat(e2)
+        .sort((a,b)=> (b.blockNumber - a.blockNumber))
+        .slice(0,5);
+
+      for (const ev of merged){
+        const blk = await provider.getBlock(ev.blockNumber);
+        const tsMs = (blk.timestamp || 0) * 1000;
+
         if(ev.event === 'BoughtWithBNB'){
           const [buyer, usdtWei, amountALTRU, paidBNB] = ev.args;
-          const blk = await provider.getBlock(ev.blockNumber);
           activity.push({
             kind:'BNB',
-            time: (blk.timestamp || 0) * 1000,
+            time: tsMs,
             buyer: String(buyer),
             altru: Number(ethers.utils.formatUnits(amountALTRU, 18)),
             bnb:   Number(ethers.utils.formatUnits(paidBNB, 18)).toFixed(5)
           });
         }else if(ev.event === 'BoughtWithUSDT'){
           const [buyer, usdtWei, amountALTRU] = ev.args;
-          const blk = await provider.getBlock(ev.blockNumber);
           activity.push({
             kind:'USDT',
-            time: (blk.timestamp || 0) * 1000,
+            time: tsMs,
             buyer: String(buyer),
             altru: Number(ethers.utils.formatUnits(amountALTRU, 18)),
             usdt:  Number(ethers.utils.formatUnits(usdtWei, 18)).toFixed(2)
@@ -900,13 +952,12 @@
       console.warn('seed activity failed', e);
     }
 
-    // Live updates via events + fallback polling
     try{
       presale.on('BoughtWithBNB', async (buyer, usdtWei, amountALTRU, paidBNB, ev)=>{
         const blk = await provider.getBlock(ev.blockNumber);
         activity.unshift({
           kind:'BNB',
-          time: (blk.timestamp || 0)*1000,
+          time: (blk.timestamp||0)*1000,
           buyer: String(buyer),
           altru: Number(ethers.utils.formatUnits(amountALTRU, 18)),
           bnb:   Number(ethers.utils.formatUnits(paidBNB, 18)).toFixed(5)
@@ -919,7 +970,7 @@
         const blk = await provider.getBlock(ev.blockNumber);
         activity.unshift({
           kind:'USDT',
-          time: (blk.timestamp || 0)*1000,
+          time: (blk.timestamp||0)*1000,
           buyer: String(buyer),
           altru: Number(ethers.utils.formatUnits(amountALTRU, 18)),
           usdt:  Number(ethers.utils.formatUnits(usdtWei, 18)).toFixed(2)
@@ -929,6 +980,7 @@
         ok('Purchase confirmed (USDT).');
       });
     }catch(e){ console.warn('event attach failed', e); }
+
     provider.on('block', (n)=>{ if(n%6===0) refreshStats(); });
 
     // Wallet changes
@@ -937,10 +989,95 @@
       window.ethereum.on('chainChanged',   ()=>location.reload());
     }
 
+    // ---- Charity Impact ----
+    const charityCard = $('charityCard'), charityEmpty=$('charityEmpty');
+    const elTax=$('charityTaxPct'), elTotal=$('charityTotal'), elSince=$('charitySince'), elMon=$('charityMonthly'), feedEl=$('charityFeed'), noteEl=$('charityNote');
+    $('charityAddrView').textContent = charityWallet;
+    $('projectAddrView').textContent = projectWallet;
+    $('burnAddrView').textContent    = burnWallet;
+
+    async function loadCharity(){
+      if(!CHARITY_RECIPIENTS.length){ charityEmpty.style.display='block'; charityCard.style.display='none'; return; }
+      charityEmpty.style.display='none'; charityCard.style.display='block';
+      elTax.textContent = (CHARITY_TAX_BPS/100).toFixed(2) + '%';
+
+      const usdtRead = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, provider);
+      const [decimals, symbol] = await Promise.all([usdtRead.decimals(), usdtRead.symbol()]);
+
+      const tip = await provider.getBlockNumber();
+      const nowBlock = await provider.getBlock(tip);
+      const nowTs = (nowBlock.timestamp||0)*1000;
+      const monthAgoTs = nowTs - 30*24*60*60*1000;
+
+      const step = 500_000;
+      let totalWei = ethers.BigNumber.from(0);
+      const events = [];
+
+      for(let start=CHARITY_START_BLOCK; start<=tip; start += step){
+        const end = Math.min(tip, start + step - 1);
+        const batchPromises = CHARITY_RECIPIENTS.map(rcpt=>{
+          const topic = ethers.utils.id("Transfer(address,address,uint256)");
+          const rcptTopic = ethers.utils.hexZeroPad(rcpt, 32).toLowerCase();
+          return provider.getLogs({
+            address: USDT_ADDRESS,
+            fromBlock: start, toBlock: end,
+            topics: [topic, null, rcptTopic]
+          });
+        });
+        const chunks = await Promise.all(batchPromises);
+        for(const logs of chunks){
+          for(const lg of logs){
+            const parsed = usdtRead.interface.parseLog(lg);
+            const value = parsed.args.value; const to = String(parsed.args.to).toLowerCase();
+            if(to === burnWallet.toLowerCase()) continue;
+            const blk = await provider.getBlock(lg.blockNumber);
+            const ts = (blk.timestamp||0)*1000;
+            totalWei = totalWei.add(value);
+            events.push({ ts, hash: lg.transactionHash, to, wei: value });
+          }
+        }
+      }
+
+      const total = Number(fmtUnits(totalWei, decimals));
+      elTotal.textContent = `${total.toLocaleString('en-US',{maximumFractionDigits:2})} ${symbol}`;
+      elSince.textContent = `since block ${CHARITY_START_BLOCK.toLocaleString()}`;
+
+      const monthWei = events.filter(e=>e.ts >= monthAgoTs).reduce((acc,e)=>acc.add(e.wei), ethers.BigNumber.from(0));
+      const monthly = Number(fmtUnits(monthWei, decimals));
+      elMon.textContent = `${monthly.toLocaleString('en-US',{maximumFractionDigits:2})} ${symbol}`;
+
+      events.sort((a,b)=>b.ts-a.ts);
+      feedEl.innerHTML = '';
+      events.slice(0,5).forEach(ev=>{
+        const row = document.createElement('div'); row.className='activity-row';
+        const when = new Date(ev.ts).toLocaleString([], {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'});
+        row.innerHTML = `<table class="activity-table"><tbody><tr>
+          <td style="width:16ch"><span class="muted">${when}</span></td>
+          <td style="min-width:24ch" class="addr">${short(ev.to)}</td>
+          <td><strong>${Number(fmtUnits(ev.wei,decimals)).toLocaleString('en-US',{maximumFractionDigits:2})}</strong> ${symbol}</td>
+          <td class="muted"><a href="https://bscscan.com/tx/${ev.hash}" target="_blank">Tx</a></td>
+        </tr></tbody></table>`;
+        feedEl.appendChild(row);
+      });
+
+      noteEl.textContent = `Summing all ${symbol} transfers to ${CHARITY_RECIPIENTS.length} charity wallet(s).`;
+    }
+
+    try{ await loadCharity(); }catch(e){ console.warn('charity scan failed', e); noteEl.textContent='Failed to load charity data.'; }
+
+    try{
+      const usdtRead = new ethers.Contract(USDT_ADDRESS, ERC20_ABI, provider);
+      CHARITY_RECIPIENTS.forEach(rcpt=>{
+        usdtRead.on(usdtRead.filters.Transfer(null, rcpt), async ()=>{
+          showToast('New charity transfer detected.', 'success');
+          try{ await loadCharity(); }catch(_){}
+        });
+      });
+    }catch(e){ console.warn('charity live listener failed', e); }
+
     // ---- Buy actions ----
     const parseFloatSafe = (v)=>{ const n = Number(v); return isFinite(n)?n:0; };
 
-    // Max BNB
     const bnbInput = $('bnbAmount');
     const maxBNB   = $('maxBNB');
     const buyBNB   = $('buyBNB');
@@ -966,19 +1103,17 @@
       }catch(e){ er(e?.data?.message || e.message || 'BNB transaction failed'); }
     };
 
-    // USDT: buy by USDT amount
     const usdtAmt  = $('usdtAmount');
     const maxUSDT  = $('maxUSDT');
     const buyUSDa  = $('buyUSDT_amount');
 
     if(maxUSDT) maxUSDT.onclick = async ()=>{
       try{
-        const dec = await usdt.decimals(); // USDT on BSC is often 18
+        const dec = await usdt.decimals();
         const bal = await usdt.balanceOf(acct);
         const human = fmtUnits(bal, dec);
         if(usdtAmt) usdtAmt.value = human;
 
-        // Also prefill ALTRU equivalent
         const usdtWei  = ethers.utils.parseUnits(human, dec);
         const altruWei = usdtWei.mul(RATE);
         const altruEl  = $('altruAmount');
@@ -1006,7 +1141,6 @@
       }catch(e){ er(e?.data?.message || e.message || 'USDT transaction failed'); }
     };
 
-    // USDT: buy targeting ALTRU amount
     const altruAmt = $('altruAmount');
     const buyUSDTb = $('buyUSDT_altru');
 
