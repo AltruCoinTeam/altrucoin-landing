@@ -45,7 +45,7 @@
       --radius:14px;
       --radius-lg:20px;
       --pad:16px;
-      --maxw:1120px;
+      --maxw:1180px;
     }
 
     /* light theme */
@@ -86,12 +86,12 @@
 
     /* ====== Layout ====== */
     .container{max-width:var(--maxw);margin:0 auto;padding:0 20px}
-    section{padding:64px 0;scroll-margin-top:84px}
+    section{padding:68px 0;scroll-margin-top:84px}
     .section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px;gap:12px}
     h1,h2,h3{letter-spacing:.2px}
     h1{font-size:clamp(2rem,4vw,3.25rem);line-height:1.1}
     h2{font-size:clamp(1.5rem,2.4vw,2rem)}
-    h3{font-size:1.15rem}
+    h3{font-size:1.12rem}
 
     /* ====== Header ====== */
     header{
@@ -120,7 +120,7 @@
 
     /* ====== Hero ====== */
     .hero{
-      padding:70px 0 40px;
+      padding:70px 0 44px;
       background:
         linear-gradient(135deg, color-mix(in oklab, var(--primary) 18%, transparent), color-mix(in oklab, var(--secondary) 12%, transparent)),
         linear-gradient(180deg, color-mix(in oklab, var(--text) 8%, transparent), transparent 40%);
@@ -417,6 +417,8 @@
           <div class="muted" style="margin-top:8px">We auto-approve if allowance is insufficient.</div>
         </div>
       </div>
+
+      <p id="status" class="muted" style="margin-top:10px;"></p>
     </div>
   </section>
 
@@ -489,24 +491,24 @@
   <section id="faq" data-aos="fade-up" class="faq">
     <div class="container">
       <div class="section-header"><h2>FAQ</h2></div>
-      <ul>
-        <li>
-          <button class="q" onclick="toggleFaq(this)">What is AltruCoin?</button>
-          <div class="a" hidden>A crypto token on BNB Smart Chain where every trade supports real charitable causes.</div>
-        </li>
-        <li>
-          <button class="q" onclick="toggleFaq(this)">How are transaction fees used?</button>
-          <div class="a" hidden>5% fee breakdown:<br>– 2.5% to charities (in USDT)<br>– 2% to development & liquidity<br>– 0.5% auto-burn</div>
-        </li>
-        <li>
-          <button class="q" onclick="toggleFaq(this)">Is the token safe?</button>
-          <div class="a" hidden>Yes — contract is open-source, verifiable, audited soon.</div>
-        </li>
-        <li>
-          <button class="q" onclick="toggleFaq(this)">How to add ALTRU?</button>
-          <div class="a" hidden>Use the 🦊 Add to MetaMask button in the Community section.</div>
-        </li>
-      </ul>
+    <ul>
+      <li>
+        <button class="q" onclick="toggleFaq(this)">What is AltruCoin?</button>
+        <div class="a" hidden>A crypto token on BNB Smart Chain where every trade supports real charitable causes.</div>
+      </li>
+      <li>
+        <button class="q" onclick="toggleFaq(this)">How are transaction fees used?</button>
+        <div class="a" hidden>5% fee breakdown:<br>– 2.5% to charities (in USDT)<br>– 2% to development & liquidity<br>– 0.5% auto-burn</div>
+      </li>
+      <li>
+        <button class="q" onclick="toggleFaq(this)">Is the token safe?</button>
+        <div class="a" hidden>Yes — contract is open-source, verifiable, audited soon.</div>
+      </li>
+      <li>
+        <button class="q" onclick="toggleFaq(this)">How to add ALTRU?</button>
+        <div class="a" hidden>Use the 🦊 Add to MetaMask button in the Community section.</div>
+      </li>
+    </ul>
     </div>
   </section>
 
@@ -550,10 +552,10 @@
 
   <!-- ====== Scripts ====== -->
   <script>
-    // ---- Theme ----
+    // ---- Theme (auto + manual) ----
     const root = document.documentElement;
     const THEME_KEY = 'altru-theme';
-    function applyTheme(mode){
+    function applyTheme(mode){ // 'light' | 'dark' | 'auto'
       root.setAttribute('data-theme', mode);
       localStorage.setItem(THEME_KEY, mode);
       if(mode==='auto'){
@@ -671,7 +673,7 @@
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>AOS.init();</script>
 
-  <!-- Dexscreener price fetch -->
+  <!-- Dexscreener price fetch (hero price pill) -->
   <script>
     async function fetchAltruPrice() {
       try {
@@ -692,13 +694,11 @@
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <script>
   (async function(){
-    // ===== Addresses (UPDATED) =====
-    const PRESALE_ADDRESS = "0xcBA251D373468198aaF33aD7942608003f7E0a99"; // актуальный пресейл
+    const PRESALE_ADDRESS = "0x4D3F586Dc66f41a05d36F960121E2C7F1a5Ab64c";
     const ALTRU_ADDRESS   = "0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E";
     const USDT_ADDRESS    = "0x55d398326f99059fF775485246999027B3197955";
     const FEED_ADDRESS    = "0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE"; // BNB/USD
 
-    // ===== ABIs =====
     const PRESALE_ABI = [
       "event BoughtWithBNB(address indexed buyer, uint256 usdtWei, uint256 amountALTRU, uint256 paidBNB)",
       "event BoughtWithUSDT(address indexed buyer, uint256 usdtWei, uint256 amountALTRU)",
@@ -720,69 +720,71 @@
       "function decimals() view returns (uint8)"
     ];
 
-    // ===== Helpers =====
     const $  = id => document.getElementById(id);
     const fmtUnits = (v,d=18)=>{ try{return ethers.utils.formatUnits(v,d)}catch{return String(v)} };
-    const numFmt = (n, max=0)=> (Number(n)||0).toLocaleString('en-US',{maximumFractionDigits:max});
-    const short = (a)=> a?`${a.slice(0,6)}…${a.slice(-4)}`:'—';
+    const nf = (n, max=0)=> (Number(n)||0).toLocaleString('en-US',{maximumFractionDigits:max});
+    const addrShort = a => a ? (a.slice(0,6)+'…'+a.slice(-4)) : '—';
 
-    // ===== Providers: read-only + wallet (optional) =====
-    const readProvider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org"); // для чтения всегда
+    // Providers:
+    // readProvider — всегда доступен (даже без кошелька)
+    const readProvider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org");
+
+    // walletProvider — только если есть MetaMask/Wallet
     let walletProvider=null, signer=null, acct=null, net=null;
-
     if(window.ethereum){
       walletProvider = new ethers.providers.Web3Provider(window.ethereum);
-      try{
-        await walletProvider.send('eth_requestAccounts', []);
-        signer = walletProvider.getSigner();
-        acct   = await signer.getAddress();
-        net    = await walletProvider.getNetwork();
-      }catch(e){
-        // пользователь мог отменить — работаем в read-only
-      }
+      try{ await walletProvider.send('eth_requestAccounts', []); signer = walletProvider.getSigner(); acct = await signer.getAddress(); net = await walletProvider.getNetwork(); }catch{}
     }
 
-    // ===== Contracts =====
+    // Contracts (read-only и подписанные)
     const presaleRead = new ethers.Contract(PRESALE_ADDRESS, PRESALE_ABI, readProvider);
     const altruRead   = new ethers.Contract(ALTRU_ADDRESS,   ERC20_ABI,   readProvider);
     const feedRead    = new ethers.Contract(FEED_ADDRESS,    FEED_ABI,    readProvider);
+    const presale     = signer ? new ethers.Contract(PRESALE_ADDRESS, PRESALE_ABI, signer) : null;
+    const usdt        = signer ? new ethers.Contract(USDT_ADDRESS,    ERC20_ABI,   signer) : null;
 
-    const presaleWrite = signer ? new ethers.Contract(PRESALE_ADDRESS, PRESALE_ABI, signer) : null;
-    const usdtWrite    = signer ? new ethers.Contract(USDT_ADDRESS,    ERC20_ABI,   signer) : null;
-
-    // ===== UI: network/account (если есть кошелёк) =====
+    // Indicators + network check
     if($('contractAddr')) $('contractAddr').textContent = PRESALE_ADDRESS;
     if(acct) $('account').textContent = acct;
     if(net){
       const chainIdDec = Number(net.chainId);
-      $('netName').textContent = net.name || (chainIdDec===56?'BSC':'Unknown');
-      $('chainId').textContent = chainIdDec;
-      if(chainIdDec!==56){
+      const isBsc = chainIdDec === 56;
+      if($('netName'))  $('netName').textContent = net.name || (isBsc?'BSC':'Unknown');
+      if($('chainId'))  $('chainId').textContent = chainIdDec;
+      if(!isBsc && $('netWarning')){
         $('wrongNetName').textContent = net.name || `Chain ${chainIdDec}`;
         $('netWarning').style.display = 'block';
       }
     }
 
-    // switch to BSC
-    $('switchToBsc')?.addEventListener('click', async ()=>{
+    async function switchToBsc(){
       try{
         await window.ethereum.request({ method:'wallet_switchEthereumChain', params:[{ chainId:'0x38' }] });
         location.reload();
       }catch(e){
-        if(e?.code===4902){
+        if(e?.code === 4902){
           try{
-            await window.ethereum.request({ method:'wallet_addEthereumChain', params:[{
-              chainId:'0x38', chainName:'BNB Smart Chain', nativeCurrency:{name:'BNB',symbol:'BNB',decimals:18},
-              rpcUrls:['https://bsc-dataseed.binance.org'], blockExplorerUrls:['https://bscscan.com']
-            }]});
+            await window.ethereum.request({
+              method:'wallet_addEthereumChain',
+              params:[{
+                chainId:'0x38',
+                chainName:'BNB Smart Chain',
+                nativeCurrency:{ name:'BNB', symbol:'BNB', decimals:18 },
+                rpcUrls:['https://bsc-dataseed.binance.org'],
+                blockExplorerUrls:['https://bscscan.com']
+              }]
+            });
             await window.ethereum.request({ method:'wallet_switchEthereumChain', params:[{ chainId:'0x38' }] });
             location.reload();
-          }catch(e2){ console.warn(e2); }
+          }catch(e2){ console.error(e2); showToast(e2?.message||'Failed to add/switch to BSC.','error'); }
+        }else{
+          console.error(e); showToast(e?.message||'Failed to switch network.','error');
         }
       }
-    });
+    }
+    $('switchToBsc')?.addEventListener('click', switchToBsc);
 
-    // ===== Stats (через readProvider — работает без кошелька) =====
+    // RATE & stats
     let RATE = await presaleRead.rateUSDT();
 
     async function refreshStats(){
@@ -795,11 +797,10 @@
           feedRead.decimals()
         ]);
 
-        const rateEl = $('rateUSDT');
-        if(rateEl) animateNumber(rateEl, Number(RATE.toString()), {format:(x)=>numFmt(x,0)});
-        if($('cap'))      animateNumber($('cap'),  +fmtUnits(cap),  {format:(x)=>numFmt(x,0)});
-        if($('sold'))     animateNumber($('sold'), +fmtUnits(sold), {format:(x)=>numFmt(x,0)});
-        if($('balance'))  animateNumber($('balance'), +fmtUnits(bal), {format:(x)=>numFmt(x,0)});
+        if($('rateUSDT')) animateNumber($('rateUSDT'), Number(RATE.toString()), {format:(x)=>nf(x,0)});
+        if($('cap'))      animateNumber($('cap'),  +fmtUnits(cap),  {format:(x)=>nf(x,0)});
+        if($('sold'))     animateNumber($('sold'), +fmtUnits(sold), {format:(x)=>nf(x,0)});
+        if($('balance'))  animateNumber($('balance'), +fmtUnits(bal), {format:(x)=>nf(x,0)});
 
         const bnbUsd = Number(rd[1]) / (10 ** Number(dec));
         if($('bnbUsd')) $('bnbUsd').textContent = `$${bnbUsd.toLocaleString('en-US',{maximumFractionDigits:2})} / BNB`;
@@ -808,11 +809,16 @@
     await refreshStats();
     readProvider.on('block', (n)=>{ if(n%6===0) refreshStats(); });
 
-    // ===== Last purchases (seed + live) =====
+    // ---- Last Purchases (seed + live) ----
     const activityEl = $('lastPurchases');
-    const activity = [];
+    const activity = []; // newest first
 
-    function tsFmt(ms){ try{ return new Date(ms).toLocaleString([], {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'});}catch{return '—';} }
+    function tsFmt(ts){
+      try{
+        const d = new Date(ts);
+        return d.toLocaleString([], {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'});
+      }catch{ return '—'; }
+    }
     function renderActivity(){
       if(!activityEl) return;
       activityEl.innerHTML = '';
@@ -831,8 +837,8 @@
             <tr>
               <td style="width:16ch"><span class="muted">${tsFmt(item.time)}</span></td>
               <td style="width:18ch"><span class="tag">${item.kind}</span></td>
-              <td style="min-width:20ch"><span class="addr">${short(item.buyer)}</span></td>
-              <td><strong>${numFmt(item.altru, 0)}</strong> ALTRU</td>
+              <td style="min-width:20ch"><span class="addr">${addrShort(item.buyer)}</span></td>
+              <td><strong>${nf(item.altru, 0)}</strong> ALTRU</td>
               <td class="muted">${item.kind==='BNB' ? `${item.bnb} BNB` : `${item.usdt} USDT`}</td>
             </tr>
           </tbody></table>
@@ -841,81 +847,77 @@
       });
     }
 
-    async function seedActivity(){
-      try{
-        const tip = await readProvider.getBlockNumber();
-        const from = Math.max(1, tip - 50000);
-        const e1 = await presaleRead.queryFilter(presaleRead.filters.BoughtWithBNB(), from, tip);
-        const e2 = await presaleRead.queryFilter(presaleRead.filters.BoughtWithUSDT(), from, tip);
-        const merged = e1.concat(e2).sort((a,b)=>b.blockNumber-a.blockNumber).slice(0,5);
+    // Seed last events (~50k blocks)
+    try{
+      const tip = await readProvider.getBlockNumber();
+      const from = Math.max(1, tip - 50000);
 
-        for(const ev of merged){
-          const blk = await readProvider.getBlock(ev.blockNumber);
-          const when = (blk.timestamp||0)*1000;
-          if(ev.event==='BoughtWithBNB'){
-            const [buyer, usdtWei, amountALTRU, paidBNB] = ev.args;
-            activity.push({
-              kind:'BNB', time:when, buyer:String(buyer),
-              altru: Number(ethers.utils.formatUnits(amountALTRU,18)),
-              bnb:   Number(ethers.utils.formatUnits(paidBNB,18)).toFixed(5)
-            });
-          }else{
-            const [buyer, usdtWei, amountALTRU] = ev.args;
-            activity.push({
-              kind:'USDT', time:when, buyer:String(buyer),
-              altru: Number(ethers.utils.formatUnits(amountALTRU,18)),
-              usdt:  Number(ethers.utils.formatUnits(usdtWei,18)).toFixed(2)
-            });
-          }
+      const e1 = await presaleRead.queryFilter(presaleRead.filters.BoughtWithBNB(), from, tip);
+      const e2 = await presaleRead.queryFilter(presaleRead.filters.BoughtWithUSDT(), from, tip);
+
+      const merged = e1.concat(e2)
+        .sort((a,b)=> b.blockNumber - a.blockNumber)
+        .slice(0,5);
+
+      for(const ev of merged){
+        const blk = await readProvider.getBlock(ev.blockNumber);
+        const when = (blk.timestamp||0)*1000;
+        if(ev.event==='BoughtWithBNB'){
+          const [buyer, usdtWei, amountALTRU, paidBNB] = ev.args;
+          activity.push({
+            kind:'BNB', time:when, buyer:String(buyer),
+            altru: +fmtUnits(amountALTRU, 18),
+            bnb:   (+fmtUnits(paidBNB, 18)).toFixed(5)
+          });
+        }else{
+          const [buyer, usdtWei, amountALTRU] = ev.args;
+          activity.push({
+            kind:'USDT', time:when, buyer:String(buyer),
+            altru: +fmtUnits(amountALTRU, 18),
+            usdt:  (+fmtUnits(usdtWei, 18)).toFixed(2)
+          });
         }
-        renderActivity();
-      }catch(e){ console.warn('seed activity failed', e); }
-    }
-    await seedActivity();
+      }
+      renderActivity();
+    }catch(e){ console.warn('seed activity failed', e); }
 
-    // live listeners (если есть кошелёк/провайдер в браузере)
-    if (walletProvider && presaleWrite){
+    // Live updates if wallet connected
+    if(walletProvider && presale){
       try{
-        presaleWrite.on('BoughtWithBNB', async (buyer, usdtWei, amountALTRU, paidBNB, ev)=>{
-          const blk = await walletProvider.getBlock(ev.blockNumber);
+        presale.on('BoughtWithBNB', async (buyer, usdtWei, amountALTRU, paidBNB, ev)=>{
+          const blk=await walletProvider.getBlock(ev.blockNumber);
           activity.unshift({
-            kind:'BNB',
-            time:(blk.timestamp||0)*1000,
-            buyer:String(buyer),
-            altru:Number(ethers.utils.formatUnits(amountALTRU,18)),
-            bnb:Number(ethers.utils.formatUnits(paidBNB,18)).toFixed(5)
+            kind:'BNB', time:(blk.timestamp||0)*1000, buyer:String(buyer),
+            altru:+fmtUnits(amountALTRU,18), bnb:(+fmtUnits(paidBNB,18)).toFixed(5)
           });
           renderActivity(); await refreshStats();
         });
-        presaleWrite.on('BoughtWithUSDT', async (buyer, usdtWei, amountALTRU, ev)=>{
-          const blk = await walletProvider.getBlock(ev.blockNumber);
+        presale.on('BoughtWithUSDT', async (buyer, usdtWei, amountALTRU, ev)=>{
+          const blk=await walletProvider.getBlock(ev.blockNumber);
           activity.unshift({
-            kind:'USDT',
-            time:(blk.timestamp||0)*1000,
-            buyer:String(buyer),
-            altru:Number(ethers.utils.formatUnits(amountALTRU,18)),
-            usdt:Number(ethers.utils.formatUnits(usdtWei,18)).toFixed(2)
+            kind:'USDT', time:(blk.timestamp||0)*1000, buyer:String(buyer),
+            altru:+fmtUnits(amountALTRU,18), usdt:(+fmtUnits(usdtWei,18)).toFixed(2)
           });
           renderActivity(); await refreshStats();
         });
       }catch(e){ console.warn('event attach failed', e); }
     }
 
-    // ===== Wallet changes =====
+    // Wallet changes
     if(window.ethereum){
       window.ethereum.on('accountsChanged', ()=>location.reload());
       window.ethereum.on('chainChanged',   ()=>location.reload());
     }
 
-    // ===== Buy actions (требуют кошелёк) =====
+    // ---- Buy actions ----
     const statusEl = document.getElementById('status');
-    const setOk = m=>{ if(statusEl){ statusEl.style.color='#6aff9f'; statusEl.textContent=m; } };
-    const setEr = m=>{ if(statusEl){ statusEl.style.color='crimson'; statusEl.textContent=m; } };
-    const parseFloatSafe = v=>{ const n=Number(v); return isFinite(n)?n:0; };
+    const setOk = (m)=>{ if(statusEl){ statusEl.style.color='#6aff9f'; statusEl.textContent=m; } };
+    const setEr = (m)=>{ if(statusEl){ statusEl.style.color='crimson'; statusEl.textContent=m; } };
+    const parseFloatSafe = (v)=>{ const n = Number(v); return isFinite(n)?n:0; };
 
     // Max BNB
     document.getElementById('maxBNB')?.addEventListener('click', async ()=>{
-      if(!walletProvider || !signer) return setEr('Connect wallet to use this.');
+      if(!walletProvider||!signer) return setEr('Connect wallet to use this.');
       try{
         const bal = await walletProvider.getBalance(await signer.getAddress());
         const buffer = ethers.utils.parseEther("0.0005");
@@ -927,57 +929,81 @@
 
     // Buy with BNB
     document.getElementById('buyBNB')?.addEventListener('click', async ()=>{
-      if(!presaleWrite || !signer) return setEr('Connect wallet on BSC to buy.');
+      if(!presale||!signer||!walletProvider) return setEr('Connect wallet on BSC to buy.');
+      const netNow = await walletProvider.getNetwork();
+      if(Number(netNow.chainId)!==56) return setEr('Wrong network. Please switch to BSC.');
       try{
         const val = parseFloatSafe(document.getElementById('bnbAmount')?.value || '0');
         if(!val || val<=0) return setEr('Enter BNB amount');
-        const tx = await presaleWrite.buyWithBNB({ value: ethers.utils.parseEther(String(val)) });
-        await tx.wait(); setOk('Success: bought with BNB'); await refreshStats();
-      }catch(e){ setEr(e?.data?.message || e.message || 'BNB transaction failed'); }
+        const tx = await presale.buyWithBNB({ value: ethers.utils.parseEther(String(val)) });
+        setOk('Sending transaction…');
+        await tx.wait();
+        setOk('Success: bought with BNB');
+        await refreshStats();
+      }catch(e){ console.error(e); setEr(e?.data?.message || e.message || 'BNB transaction failed'); }
     });
 
-    // Max USDT
+    // USDT max + buys
     document.getElementById('maxUSDT')?.addEventListener('click', async ()=>{
-      if(!usdtWrite || !signer) return setEr('Connect wallet to use this.');
+      if(!usdt||!signer) return setEr('Connect wallet to use this.');
       try{
-        const dec = await usdtWrite.decimals();
-        const bal = await usdtWrite.balanceOf(await signer.getAddress());
+        const dec = await usdt.decimals(); // 18 on BSC
+        const bal = await usdt.balanceOf(await signer.getAddress());
         document.getElementById('usdtAmount').value = fmtUnits(bal, dec);
         setOk('Max USDT filled.');
       }catch(e){ setEr(e.message || 'Failed to read USDT balance'); }
     });
 
-    // Buy with USDT (amount)
     document.getElementById('buyUSDT_amount')?.addEventListener('click', async ()=>{
-      if(!usdtWrite || !presaleWrite || !signer) return setEr('Connect wallet on BSC to buy.');
+      if(!usdt||!presale||!signer||!walletProvider) return setEr('Connect wallet on BSC to buy.');
+      const netNow = await walletProvider.getNetwork();
+      if(Number(netNow.chainId)!==56) return setEr('Wrong network. Please switch to BSC.');
       try{
-        const dec = await usdtWrite.decimals();
+        const dec = await usdt.decimals();
         const amt = parseFloatSafe(document.getElementById('usdtAmount')?.value || '0');
         if(!amt || amt<=0) return setEr('Enter USDT amount');
         const usdtWei = ethers.utils.parseUnits(String(amt), dec);
+
         const owner = await signer.getAddress();
-        const allowance = await usdtWrite.allowance(owner, PRESALE_ADDRESS);
-        if(allowance.lt(usdtWei)){ const txA = await usdtWrite.approve(PRESALE_ADDRESS, usdtWei); await txA.wait(); }
-        const tx = await presaleWrite.buyWithUSDT(usdtWei);
-        await tx.wait(); setOk(`Success: bought with ${amt} USDT`); await refreshStats();
-      }catch(e){ setEr(e?.data?.message || e.message || 'USDT transaction failed'); }
+        const allowance = await usdt.allowance(owner, PRESALE_ADDRESS);
+        if(allowance.lt(usdtWei)){
+          const txA = await usdt.approve(PRESALE_ADDRESS, usdtWei);
+          setOk('Approving…');
+          await txA.wait();
+        }
+        const tx = await presale.buyWithUSDT(usdtWei);
+        setOk('Sending transaction…');
+        await tx.wait();
+        setOk(`Success: bought with ${amt} USDT`);
+        await refreshStats();
+      }catch(e){ console.error(e); setEr(e?.data?.message || e.message || 'USDT transaction failed'); }
     });
 
-    // Buy with USDT (target ALTRU)
     document.getElementById('buyUSDT_altru')?.addEventListener('click', async ()=>{
-      if(!usdtWrite || !presaleWrite || !signer) return setEr('Connect wallet on BSC to buy.');
+      if(!usdt||!presale||!signer||!walletProvider) return setEr('Connect wallet on BSC to buy.');
+      const netNow = await walletProvider.getNetwork();
+      if(Number(netNow.chainId)!==56) return setEr('Wrong network. Please switch to BSC.');
       try{
         const a = parseFloatSafe(document.getElementById('altruAmount')?.value || '0');
         if(!a || a<=0) return setEr('Enter ALTRU amount');
-        const rate = await presaleRead.rateUSDT();
+
         const altruWei = ethers.utils.parseUnits(String(a), 18);
-        const usdtWei  = altruWei.add(rate.sub(1)).div(rate); // ceil
+        const rateBN   = await presaleRead.rateUSDT();
+        const usdtWei  = altruWei.add(rateBN.sub(1)).div(rateBN); // ceil
+
         const owner = await signer.getAddress();
-        const allowance = await usdtWrite.allowance(owner, PRESALE_ADDRESS);
-        if(allowance.lt(usdtWei)){ const txA = await usdtWrite.approve(PRESALE_ADDRESS, usdtWei); await txA.wait(); }
-        const tx = await presaleWrite.buyWithUSDT(usdtWei);
-        await tx.wait(); setOk(`Success: bought ${a} ALTRU`); await refreshStats();
-      }catch(e){ setEr(e?.data?.message || e.message || 'USDT transaction failed'); }
+        const allowance = await usdt.allowance(owner, PRESALE_ADDRESS);
+        if(allowance.lt(usdtWei)){
+          const txA = await usdt.approve(PRESALE_ADDRESS, usdtWei);
+          setOk('Approving…');
+          await txA.wait();
+        }
+        const tx = await presale.buyWithUSDT(usdtWei);
+        setOk('Sending transaction…');
+        await tx.wait();
+        setOk(`Success: bought ${a} ALTRU`);
+        await refreshStats();
+      }catch(e){ console.error(e); setEr(e?.data?.message || e.message || 'USDT transaction failed'); }
     });
 
   })();
