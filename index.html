@@ -395,7 +395,7 @@
         <div class="card">
           <h3>Buy with BNB</h3>
           <div class="row" style="margin-top:10px">
-            <input id="bnbAmount" type="number" step="0.0001" placeholder="BNB amount"/>
+            <input id="bnbAmount" type="number" step="0.000001" placeholder="BNB amount"/>
             <button id="maxBNB" class="ghost">Max BNB</button>
             <button id="buyBNB">Buy</button>
           </div>
@@ -726,17 +726,17 @@
     const addrShort = a => a ? (a.slice(0,6)+'…'+a.slice(-4)) : '—';
 
     // Providers:
-    // readProvider — всегда доступен (даже без кошелька)
+    // readProvider — always available (even without wallet)
     const readProvider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org");
 
-    // walletProvider — только если есть MetaMask/Wallet
+    // walletProvider — only if wallet is present
     let walletProvider=null, signer=null, acct=null, net=null;
     if(window.ethereum){
       walletProvider = new ethers.providers.Web3Provider(window.ethereum);
       try{ await walletProvider.send('eth_requestAccounts', []); signer = walletProvider.getSigner(); acct = await signer.getAddress(); net = await walletProvider.getNetwork(); }catch{}
     }
 
-    // Contracts (read-only и подписанные)
+    // Contracts (read-only and signed)
     const presaleRead = new ethers.Contract(PRESALE_ADDRESS, PRESALE_ABI, readProvider);
     const altruRead   = new ethers.Contract(ALTRU_ADDRESS,   ERC20_ABI,   readProvider);
     const feedRead    = new ethers.Contract(FEED_ADDRESS,    FEED_ABI,    readProvider);
@@ -839,7 +839,7 @@
               <td style="width:18ch"><span class="tag">${item.kind}</span></td>
               <td style="min-width:20ch"><span class="addr">${addrShort(item.buyer)}</span></td>
               <td><strong>${nf(item.altru, 0)}</strong> ALTRU</td>
-              <td class="muted">${item.kind==='BNB' ? `${item.bnb} BNB` : `${item.usdt} USDT`}</td>
+              <td class="muted">${item.kind==='BNB' ? ${'`'}${'${item.bnb}'} BNB${'`'} : ${'`'}${'${item.usdt}'} USDT${'`'}}</td>
             </tr>
           </tbody></table>
         `;
@@ -911,36 +911,116 @@
 
     // ---- Buy actions ----
     const statusEl = document.getElementById('status');
-    const setOk = (m)=>{ if(statusEl){ statusEl.style.color='#6aff9f'; statusEl.textContent=m; } };
-    const setEr = (m)=>{ if(statusEl){ statusEl.style.color='crimson'; statusEl.textContent=m; } };
+    const setOk  = (m)=>{ if(statusEl){ statusEl.style.color='#6aff9f'; statusEl.textContent=m; } };
+    const setEr  = (m)=>{ if(statusEl){ statusEl.style.color='crimson'; statusEl.textContent=m; } };
+    const setWarn= (m)=>{ if(statusEl){ statusEl.style.color='#ffb020'; statusEl.textContent=m; } };
     const parseFloatSafe = (v)=>{ const n = Number(v); return isFinite(n)?n:0; };
 
-    // Max BNB
-    document.getElementById('maxBNB')?.addEventListener('click', async ()=>{
-      if(!walletProvider||!signer) return setEr('Connect wallet to use this.');
+    /* ------------------------------
+       Gas-aware helpers for BNB buy
+       ------------------------------ */
+
+    // Estimate gas price/limit and total gas cost for buyWithBNB(valueWei)
+    async function estimateBuyWithBnbCostWei(provider, presaleContract, valueWei){
+      const gasPrice = await provider.getGasPrice(); // legacy gas on BSC
+      let gasLimit;
       try{
-        const bal = await walletProvider.getBalance(await signer.getAddress());
-        const buffer = ethers.utils.parseEther("0.0005");
-        const spend = bal.gt(buffer)? bal.sub(buffer): ethers.constants.Zero;
-        document.getElementById('bnbAmount').value = fmtUnits(spend,18);
-        setOk('Max BNB filled (minus gas buffer).');
-      }catch(e){ setEr(e.message || 'Failed to read BNB balance'); }
+        gasLimit = await presaleContract.estimateGas.buyWithBNB({ value: valueWei });
+      }catch{
+        // Fallback: safe upper bound if estimation fails
+        gasLimit = ethers.BigNumber.from(220000);
+      }
+      const gasCost = gasLimit.mul(gasPrice);
+      return { gasPrice, gasLimit, gasCost };
+    }
+
+    // Compute the maximum spendable value (wei) such that value + gas <= balance
+    async function computeSpendableBNBWei(provider, presaleContract, address){
+      const bal = await provider.getBalance(address);
+      // Binary search between 0 and balance
+      let lo = ethers.constants.Zero;
+      let hi = bal;
+      for(let i=0;i<15;i++){
+        const mid = lo.add(hi).div(2);
+        const { gasCost } = await estimateBuyWithBnbCostWei(provider, presaleContract, mid);
+        const total = mid.add(gasCost);
+        if(total.lte(bal)){
+          lo = mid; // can afford more
+        }else{
+          hi = mid; // too high
+        }
+      }
+      // Tiny safety margin so we don't hit "exactly on the edge"
+      const safety = ethers.BigNumber.from("10000"); // 10k wei
+      return lo.gt(safety) ? lo.sub(safety) : ethers.constants.Zero;
+    }
+
+    // Max BNB (gas-aware)
+    document.getElementById('maxBNB')?.addEventListener('click', async ()=>{
+      if(!walletProvider||!signer||!presale) return setEr('Connect your wallet on BSC to use Max BNB.');
+      try{
+        const addr = await signer.getAddress();
+        const spendWei = await computeSpendableBNBWei(walletProvider, presale, addr);
+        if(spendWei.isZero()){
+          document.getElementById('bnbAmount').value = '';
+          return setWarn('Not enough BNB to cover gas. Please add funds.');
+        }
+        // Round to 6 decimals for a clean input value
+        const spend = Number(ethers.utils.formatEther(spendWei));
+        const rounded = Math.max(0, Math.floor(spend * 1e6) / 1e6);
+        document.getElementById('bnbAmount').value = rounded.toString();
+        setOk('Filled with the maximum spendable BNB (gas included).');
+      }catch(e){
+        console.error(e);
+        setEr(e?.message || 'Failed to compute max spendable BNB.');
+      }
     });
 
-    // Buy with BNB
+    // Buy with BNB (gas-aware check)
     document.getElementById('buyBNB')?.addEventListener('click', async ()=>{
-      if(!presale||!signer||!walletProvider) return setEr('Connect wallet on BSC to buy.');
+      // Ensure presale, signer and provider are available
+      if(!presale||!signer||!walletProvider) return setEr('Connect your wallet on BSC to buy.');
+
+      // Ensure we are on BSC
       const netNow = await walletProvider.getNetwork();
       if(Number(netNow.chainId)!==56) return setEr('Wrong network. Please switch to BSC.');
+
       try{
-        const val = parseFloatSafe(document.getElementById('bnbAmount')?.value || '0');
-        if(!val || val<=0) return setEr('Enter BNB amount');
-        const tx = await presale.buyWithBNB({ value: ethers.utils.parseEther(String(val)) });
-        setOk('Sending transaction…');
+        // Read and validate user input
+        const valStr = document.getElementById('bnbAmount')?.value || '0';
+        const val = Number(valStr);
+        if(!val || val<=0) return setEr('Enter the amount in BNB.');
+
+        // Convert to wei
+        const valueWei = ethers.utils.parseEther(String(val));
+
+        // Check user balance and compute needed gas
+        const addr   = await signer.getAddress();
+        const balWei = await walletProvider.getBalance(addr);
+
+        const { gasCost } = await estimateBuyWithBnbCostWei(walletProvider, presale, valueWei);
+        const needWei = valueWei.add(gasCost);
+
+        // If balance < value + gas, show a clear error with numbers
+        if(needWei.gt(balWei)){
+          const have = Number(ethers.utils.formatEther(balWei));
+          const need = Number(ethers.utils.formatEther(needWei));
+          return setEr(`Not enough BNB: you have ${have.toFixed(6)}, need ~${need.toFixed(6)} (value + gas). Reduce the amount or add funds.`);
+        }
+
+        // Send transaction
+        const tx = await presale.buyWithBNB({ value: valueWei });
+        setOk('Transaction sent…');
+
+        // Wait for confirmation
         await tx.wait();
-        setOk('Success: bought with BNB');
+        setOk('Successfully purchased with BNB.');
         await refreshStats();
-      }catch(e){ console.error(e); setEr(e?.data?.message || e.message || 'BNB transaction failed'); }
+      }catch(e){
+        console.error(e);
+        if(e?.code===4001) return setEr('Transaction rejected by user.');
+        setEr(e?.data?.message || e.message || 'BNB transaction failed.');
+      }
     });
 
     // USDT max + buys
