@@ -690,403 +690,390 @@
     setInterval(fetchAltruPrice, 15000);
   </script>
 
-  <!-- ethers.js + widget logic -->
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-  <script>
-  (async function(){
-    const PRESALE_ADDRESS = "0x4D3F586Dc66f41a05d36F960121E2C7F1a5Ab64c";
-    const ALTRU_ADDRESS   = "0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E";
-    const USDT_ADDRESS    = "0x55d398326f99059fF775485246999027B3197955";
-    const FEED_ADDRESS    = "0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE"; // BNB/USD
+ <!-- ethers.js + widget logic -->
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+<script>
+(async function(){
+  // ====== Addresses ======
+  const PRESALE_ADDRESS = "0x4D3F586Dc66f41a05d36F960121E2C7F1a5Ab64c";
+  const ALTRU_ADDRESS   = "0x24f3F00A8e6E8a37490b2244C7705a7A005dDb4E";
+  const USDT_ADDRESS    = "0x55d398326f99059fF775485246999027B3197955";
+  const FEED_ADDRESS    = "0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE"; // Chainlink BNB/USD
 
-    const PRESALE_ABI = [
-      "event BoughtWithBNB(address indexed buyer, uint256 usdtWei, uint256 amountALTRU, uint256 paidBNB)",
-      "event BoughtWithUSDT(address indexed buyer, uint256 usdtWei, uint256 amountALTRU)",
-      "function rateUSDT() view returns (uint256)",
-      "function hardCapTokens() view returns (uint256)",
-      "function soldTokens() view returns (uint256)",
-      "function paused() view returns (bool)",
-      "function buyWithBNB() payable",
-      "function buyWithUSDT(uint256 usdtWei)"
-    ];
-    const ERC20_ABI = [
-      "function balanceOf(address) view returns (uint256)",
-      "function approve(address spender, uint256 amount) returns (bool)",
-      "function allowance(address owner, address spender) view returns (uint256)",
-      "function decimals() view returns (uint8)"
-    ];
-    const FEED_ABI = [
-      "function latestRoundData() view returns (uint80,int256,uint256,uint256,uint80)",
-      "function decimals() view returns (uint8)"
-    ];
+  // ====== ABIs ======
+  const PRESALE_ABI = [
+    "event BoughtWithBNB(address indexed buyer, uint256 usdtWei, uint256 amountALTRU, uint256 paidBNB)",
+    "event BoughtWithUSDT(address indexed buyer, uint256 usdtWei, uint256 amountALTRU)",
+    "function rateUSDT() view returns (uint256)",
+    "function hardCapTokens() view returns (uint256)",
+    "function soldTokens() view returns (uint256)",
+    "function paused() view returns (bool)",
+    "function buyWithBNB() payable",
+    "function buyWithUSDT(uint256 usdtWei)"
+  ];
+  const ERC20_ABI = [
+    "function balanceOf(address) view returns (uint256)",
+    "function approve(address spender, uint256 amount) returns (bool)",
+    "function allowance(address owner, address spender) view returns (uint256)",
+    "function decimals() view returns (uint8)"
+  ];
+  const FEED_ABI = [
+    "function latestRoundData() view returns (uint80,int256,uint256,uint256,uint80)",
+    "function decimals() view returns (uint8)"
+  ];
 
-    const $  = id => document.getElementById(id);
-    const fmtUnits = (v,d=18)=>{ try{return ethers.utils.formatUnits(v,d)}catch{return String(v)} };
-    const nf = (n, max=0)=> (Number(n)||0).toLocaleString('en-US',{maximumFractionDigits:max});
-    const addrShort = a => a ? (a.slice(0,6)+'…'+a.slice(-4)) : '—';
+  // ====== DOM helpers ======
+  const $  = id => document.getElementById(id);
+  const statusEl = $('status');
+  const setOk = (m)=>{ if(statusEl){ statusEl.style.color='#6aff9f'; statusEl.textContent=m; } };
+  const setEr = (m)=>{ if(statusEl){ statusEl.style.color='crimson'; statusEl.textContent=m; } };
+  const nf = (n, max=0)=> (Number(n)||0).toLocaleString('en-US',{maximumFractionDigits:max});
 
-    // Providers:
-    // readProvider — always available (even without wallet)
-    const readProvider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org");
-
-    // walletProvider — only if wallet is present
-    let walletProvider=null, signer=null, acct=null, net=null;
-    if(window.ethereum){
-      walletProvider = new ethers.providers.Web3Provider(window.ethereum);
-      try{ await walletProvider.send('eth_requestAccounts', []); signer = walletProvider.getSigner(); acct = await signer.getAddress(); net = await walletProvider.getNetwork(); }catch{}
-    }
-
-    // Contracts (read-only and signed)
-    const presaleRead = new ethers.Contract(PRESALE_ADDRESS, PRESALE_ABI, readProvider);
-    const altruRead   = new ethers.Contract(ALTRU_ADDRESS,   ERC20_ABI,   readProvider);
-    const feedRead    = new ethers.Contract(FEED_ADDRESS,    FEED_ABI,    readProvider);
-    const presale     = signer ? new ethers.Contract(PRESALE_ADDRESS, PRESALE_ABI, signer) : null;
-    const usdt        = signer ? new ethers.Contract(USDT_ADDRESS,    ERC20_ABI,   signer) : null;
-
-    // Indicators + network check
-    if($('contractAddr')) $('contractAddr').textContent = PRESALE_ADDRESS;
-    if(acct) $('account').textContent = acct;
-    if(net){
-      const chainIdDec = Number(net.chainId);
-      const isBsc = chainIdDec === 56;
-      if($('netName'))  $('netName').textContent = net.name || (isBsc?'BSC':'Unknown');
-      if($('chainId'))  $('chainId').textContent = chainIdDec;
-      if(!isBsc && $('netWarning')){
-        $('wrongNetName').textContent = net.name || `Chain ${chainIdDec}`;
-        $('netWarning').style.display = 'block';
-      }
-    }
-
-    async function switchToBsc(){
+  // ====== Provider: robust read RPC (race with timeout) ======
+  const READ_RPCS = [
+    "https://bsc-dataseed.binance.org",
+    "https://rpc.ankr.com/bsc",
+    "https://bscrpc.com"
+  ];
+  function timeout(ms){ return new Promise((_,rej)=>setTimeout(()=>rej(new Error('RPC timeout')),ms)); }
+  async function makeReadProvider(){
+    // Race the first RPC that responds to getBlockNumber within 3s
+    for(const url of READ_RPCS){
       try{
-        await window.ethereum.request({ method:'wallet_switchEthereumChain', params:[{ chainId:'0x38' }] });
-        location.reload();
-      }catch(e){
-        if(e?.code === 4902){
-          try{
-            await window.ethereum.request({
-              method:'wallet_addEthereumChain',
-              params:[{
-                chainId:'0x38',
-                chainName:'BNB Smart Chain',
-                nativeCurrency:{ name:'BNB', symbol:'BNB', decimals:18 },
-                rpcUrls:['https://bsc-dataseed.binance.org'],
-                blockExplorerUrls:['https://bscscan.com']
-              }]
-            });
-            await window.ethereum.request({ method:'wallet_switchEthereumChain', params:[{ chainId:'0x38' }] });
-            location.reload();
-          }catch(e2){ console.error(e2); showToast(e2?.message||'Failed to add/switch to BSC.','error'); }
-        }else{
-          console.error(e); showToast(e?.message||'Failed to switch network.','error');
-        }
-      }
+        const p = new ethers.providers.JsonRpcProvider(url, { name: 'bsc', chainId: 56 });
+        await Promise.race([p.getBlockNumber(), timeout(3000)]);
+        return p;
+      }catch{ /* try next */ }
     }
-    $('switchToBsc')?.addEventListener('click', switchToBsc);
+    // fallback to the first anyway
+    return new ethers.providers.JsonRpcProvider(READ_RPCS[0], { name: 'bsc', chainId: 56 });
+  }
+  const readProvider = await makeReadProvider();
 
-    // RATE & stats
-    let RATE = await presaleRead.rateUSDT();
-
-    async function refreshStats(){
-      try{
-        const [cap,sold,bal,rd,dec] = await Promise.all([
-          presaleRead.hardCapTokens(),
-          presaleRead.soldTokens(),
-          altruRead.balanceOf(PRESALE_ADDRESS),
-          feedRead.latestRoundData(),
-          feedRead.decimals()
-        ]);
-
-        if($('rateUSDT')) animateNumber($('rateUSDT'), Number(RATE.toString()), {format:(x)=>nf(x,0)});
-        if($('cap'))      animateNumber($('cap'),  +fmtUnits(cap),  {format:(x)=>nf(x,0)});
-        if($('sold'))     animateNumber($('sold'), +fmtUnits(sold), {format:(x)=>nf(x,0)});
-        if($('balance'))  animateNumber($('balance'), +fmtUnits(bal), {format:(x)=>nf(x,0)});
-
-        const bnbUsd = Number(rd[1]) / (10 ** Number(dec));
-        if($('bnbUsd')) $('bnbUsd').textContent = `$${bnbUsd.toLocaleString('en-US',{maximumFractionDigits:2})} / BNB`;
-      }catch(e){ console.warn('refresh failed', e); }
-    }
-    await refreshStats();
-    readProvider.on('block', (n)=>{ if(n%6===0) refreshStats(); });
-
-    // ---- Last Purchases (seed + live) ----
-    const activityEl = $('lastPurchases');
-    const activity = []; // newest first
-
-    function tsFmt(ts){
-      try{
-        const d = new Date(ts);
-        return d.toLocaleString([], {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'});
-      }catch{ return '—'; }
-    }
-    function renderActivity(){
-      if(!activityEl) return;
-      activityEl.innerHTML = '';
-      if(activity.length===0){
-        const empty = document.createElement('div');
-        empty.className = 'muted';
-        empty.textContent = 'No purchases yet.';
-        activityEl.appendChild(empty);
-        return;
-      }
-      activity.slice(0,5).forEach(item=>{
-        const row = document.createElement('div');
-        row.className = 'activity-row';
-        row.innerHTML = `
-          <table class="activity-table"><tbody>
-            <tr>
-              <td style="width:16ch"><span class="muted">${tsFmt(item.time)}</span></td>
-              <td style="width:18ch"><span class="tag">${item.kind}</span></td>
-              <td style="min-width:20ch"><span class="addr">${addrShort(item.buyer)}</span></td>
-              <td><strong>${nf(item.altru, 0)}</strong> ALTRU</td>
-              <td class="muted">${item.kind==='BNB' ? ${'`'}${'${item.bnb}'} BNB${'`'} : ${'`'}${'${item.usdt}'} USDT${'`'}}</td>
-            </tr>
-          </tbody></table>
-        `;
-        activityEl.appendChild(row);
-      });
-    }
-
-    // Seed last events (~50k blocks)
+  // Wallet provider (optional; only if user has MetaMask/etc.)
+  let walletProvider = null, signer = null, acct = null, net = null;
+  if(window.ethereum){
+    walletProvider = new ethers.providers.Web3Provider(window.ethereum, 'any'); // 'any' to survive network switch
     try{
-      const tip = await readProvider.getBlockNumber();
-      const from = Math.max(1, tip - 50000);
+      await walletProvider.send('eth_requestAccounts', []);
+      signer = walletProvider.getSigner();
+      acct   = await signer.getAddress();
+      net    = await walletProvider.getNetwork();
+    }catch{ /* user might cancel connect */ }
+  }
 
-      const e1 = await presaleRead.queryFilter(presaleRead.filters.BoughtWithBNB(), from, tip);
-      const e2 = await presaleRead.queryFilter(presaleRead.filters.BoughtWithUSDT(), from, tip);
+  // ====== Contracts (read + write) ======
+  const presaleRead = new ethers.Contract(PRESALE_ADDRESS, PRESALE_ABI, readProvider);
+  const altruRead   = new ethers.Contract(ALTRU_ADDRESS,   ERC20_ABI,   readProvider);
+  const feedRead    = new ethers.Contract(FEED_ADDRESS,    FEED_ABI,    readProvider);
+  const presale     = signer ? new ethers.Contract(PRESALE_ADDRESS, PRESALE_ABI, signer) : null;
+  const usdt        = signer ? new ethers.Contract(USDT_ADDRESS,    ERC20_ABI,   signer) : null;
 
-      const merged = e1.concat(e2)
-        .sort((a,b)=> b.blockNumber - a.blockNumber)
-        .slice(0,5);
-
-      for(const ev of merged){
-        const blk = await readProvider.getBlock(ev.blockNumber);
-        const when = (blk.timestamp||0)*1000;
-        if(ev.event==='BoughtWithBNB'){
-          const [buyer, usdtWei, amountALTRU, paidBNB] = ev.args;
-          activity.push({
-            kind:'BNB', time:when, buyer:String(buyer),
-            altru: +fmtUnits(amountALTRU, 18),
-            bnb:   (+fmtUnits(paidBNB, 18)).toFixed(5)
+  // ====== Header indicators + network warning ======
+  if($('contractAddr')) $('contractAddr').textContent = PRESALE_ADDRESS;
+  if(acct) $('account') && ( $('account').textContent = acct );
+  if(net){
+    const chainIdDec = Number(net.chainId);
+    const isBsc = chainIdDec === 56;
+    if($('netName'))  $('netName').textContent = net.name || (isBsc?'BSC':'Unknown');
+    if($('chainId'))  $('chainId').textContent = chainIdDec;
+    if(!isBsc && $('netWarning')){
+      $('wrongNetName').textContent = net.name || `Chain ${chainIdDec}`;
+      $('netWarning').style.display = 'block';
+    }
+  }
+  $('switchToBsc')?.addEventListener('click', async ()=>{
+    try{
+      await window.ethereum.request({ method:'wallet_switchEthereumChain', params:[{ chainId:'0x38' }] });
+      location.reload();
+    }catch(e){
+      if(e?.code===4902){
+        try{
+          await window.ethereum.request({
+            method:'wallet_addEthereumChain',
+            params:[{
+              chainId:'0x38',
+              chainName:'BNB Smart Chain',
+              nativeCurrency:{ name:'BNB', symbol:'BNB', decimals:18 },
+              rpcUrls:READ_RPCS,
+              blockExplorerUrls:['https://bscscan.com']
+            }]
           });
-        }else{
-          const [buyer, usdtWei, amountALTRU] = ev.args;
-          activity.push({
-            kind:'USDT', time:when, buyer:String(buyer),
-            altru: +fmtUnits(amountALTRU, 18),
-            usdt:  (+fmtUnits(usdtWei, 18)).toFixed(2)
-          });
-        }
+          await window.ethereum.request({ method:'wallet_switchEthereumChain', params:[{ chainId:'0x38' }] });
+          location.reload();
+        }catch(e2){ setEr(e2?.message||'Failed to add/switch BSC'); }
+      }else{
+        setEr(e?.message||'Failed to switch network');
       }
-      renderActivity();
-    }catch(e){ console.warn('seed activity failed', e); }
+    }
+  });
 
-    // Live updates if wallet connected
-    if(walletProvider && presale){
-      try{
-        presale.on('BoughtWithBNB', async (buyer, usdtWei, amountALTRU, paidBNB, ev)=>{
-          const blk=await walletProvider.getBlock(ev.blockNumber);
-          activity.unshift({
-            kind:'BNB', time:(blk.timestamp||0)*1000, buyer:String(buyer),
-            altru:+fmtUnits(amountALTRU,18), bnb:(+fmtUnits(paidBNB,18)).toFixed(5)
-          });
-          renderActivity(); await refreshStats();
+  // ====== Dynamic decimals ======
+  // IMPORTANT: we fetch token decimals once to format balances correctly
+  let altruDecimals = 18;
+  try { altruDecimals = await altruRead.decimals(); } catch{ altruDecimals = 18; }
+
+  // ====== Rate & Stats ======
+  let RATE = ethers.BigNumber.from(0);
+  async function refreshStats(){
+    try{
+      const [rate, cap, sold, bal, rd, dec] = await Promise.all([
+        presaleRead.rateUSDT(),
+        presaleRead.hardCapTokens(),
+        presaleRead.soldTokens(),
+        altruRead.balanceOf(PRESALE_ADDRESS),
+        feedRead.latestRoundData(),
+        feedRead.decimals()
+      ]);
+      RATE = rate;
+
+      const capN  = Number(ethers.utils.formatUnits(cap,  altruDecimals));
+      const soldN = Number(ethers.utils.formatUnits(sold, altruDecimals));
+      const balN  = Number(ethers.utils.formatUnits(bal,  altruDecimals));
+
+      $('rateUSDT') && animateNumber($('rateUSDT'), Number(RATE.toString()), {format:(x)=>nf(x,0)});
+      $('cap')      && animateNumber($('cap'),  capN,  {format:(x)=>nf(x,0)});
+      $('sold')     && animateNumber($('sold'), soldN, {format:(x)=>nf(x,0)});
+      $('balance')  && animateNumber($('balance'), balN, {format:(x)=>nf(x,0)});
+
+      const bnbUsd = Number(rd[1]) / (10 ** Number(dec));
+      $('bnbUsd') && ( $('bnbUsd').textContent = `$${bnbUsd.toLocaleString('en-US',{maximumFractionDigits:2})} / BNB` );
+    }catch(e){
+      console.warn('refresh failed', e);
+      setEr('Failed to load on-chain stats. Retrying…');
+    }
+  }
+  await refreshStats();
+  readProvider.on('block', (n)=>{ if(n%6===0) refreshStats(); });
+
+  // ====== Last Purchases ======
+  const activityEl = $('lastPurchases');
+  const activity = [];
+  const addrShort = a => a ? (a.slice(0,6)+'…'+a.slice(-4)) : '—';
+  const tsFmt = ts => { try{ const d=new Date(ts); return d.toLocaleString([], {hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'});}catch{return '—'} };
+
+  function renderActivity(){
+    if(!activityEl) return;
+    activityEl.innerHTML = '';
+    if(activity.length===0){
+      const empty = document.createElement('div');
+      empty.className = 'muted';
+      empty.textContent = 'No purchases yet.';
+      activityEl.appendChild(empty);
+      return;
+    }
+    activity.slice(0,5).forEach(item=>{
+      const row = document.createElement('div');
+      row.className = 'activity-row';
+      row.innerHTML = `
+        <table class="activity-table"><tbody>
+          <tr>
+            <td style="width:16ch"><span class="muted">${tsFmt(item.time)}</span></td>
+            <td style="width:18ch"><span class="tag">${item.kind}</span></td>
+            <td style="min-width:20ch"><span class="addr">${addrShort(item.buyer)}</span></td>
+            <td><strong>${nf(item.altru, 0)}</strong> ALTRU</td>
+            <td class="muted">${item.kind==='BNB' ? `${item.bnb} BNB` : `${item.usdt} USDT`}</td>
+          </tr>
+        </tbody></table>
+      `;
+      activityEl.appendChild(row);
+    });
+  }
+
+  // Seed last events (~50k blocks)
+  try{
+    const tip = await readProvider.getBlockNumber();
+    const from = Math.max(1, tip - 50000);
+    const e1 = await presaleRead.queryFilter(presaleRead.filters.BoughtWithBNB(), from, tip);
+    const e2 = await presaleRead.queryFilter(presaleRead.filters.BoughtWithUSDT(), from, tip);
+
+    const merged = e1.concat(e2).sort((a,b)=> b.blockNumber - a.blockNumber).slice(0,5);
+    for(const ev of merged){
+      const blk = await readProvider.getBlock(ev.blockNumber);
+      const when = (blk.timestamp||0)*1000;
+      if(ev.event==='BoughtWithBNB'){
+        const [buyer, usdtWei, amountALTRU, paidBNB] = ev.args;
+        activity.push({
+          kind:'BNB', time:when, buyer:String(buyer),
+          altru: +ethers.utils.formatUnits(amountALTRU, altruDecimals),
+          bnb:   (+ethers.utils.formatUnits(paidBNB, 18)).toFixed(5)
         });
-        presale.on('BoughtWithUSDT', async (buyer, usdtWei, amountALTRU, ev)=>{
-          const blk=await walletProvider.getBlock(ev.blockNumber);
-          activity.unshift({
-            kind:'USDT', time:(blk.timestamp||0)*1000, buyer:String(buyer),
-            altru:+fmtUnits(amountALTRU,18), usdt:(+fmtUnits(usdtWei,18)).toFixed(2)
-          });
-          renderActivity(); await refreshStats();
+      }else{
+        const [buyer, usdtWei, amountALTRU] = ev.args;
+        activity.push({
+          kind:'USDT', time:when, buyer:String(buyer),
+          altru: +ethers.utils.formatUnits(amountALTRU, altruDecimals),
+          usdt:  (+ethers.utils.formatUnits(usdtWei, 18)).toFixed(2)
         });
-      }catch(e){ console.warn('event attach failed', e); }
-    }
-
-    // Wallet changes
-    if(window.ethereum){
-      window.ethereum.on('accountsChanged', ()=>location.reload());
-      window.ethereum.on('chainChanged',   ()=>location.reload());
-    }
-
-    // ---- Buy actions ----
-    const statusEl = document.getElementById('status');
-    const setOk  = (m)=>{ if(statusEl){ statusEl.style.color='#6aff9f'; statusEl.textContent=m; } };
-    const setEr  = (m)=>{ if(statusEl){ statusEl.style.color='crimson'; statusEl.textContent=m; } };
-    const setWarn= (m)=>{ if(statusEl){ statusEl.style.color='#ffb020'; statusEl.textContent=m; } };
-    const parseFloatSafe = (v)=>{ const n = Number(v); return isFinite(n)?n:0; };
-
-    /* ------------------------------
-       Gas-aware helpers for BNB buy
-       ------------------------------ */
-
-    // Estimate gas price/limit and total gas cost for buyWithBNB(valueWei)
-    async function estimateBuyWithBnbCostWei(provider, presaleContract, valueWei){
-      const gasPrice = await provider.getGasPrice(); // legacy gas on BSC
-      let gasLimit;
-      try{
-        gasLimit = await presaleContract.estimateGas.buyWithBNB({ value: valueWei });
-      }catch{
-        // Fallback: safe upper bound if estimation fails
-        gasLimit = ethers.BigNumber.from(220000);
       }
-      const gasCost = gasLimit.mul(gasPrice);
-      return { gasPrice, gasLimit, gasCost };
     }
+    renderActivity();
+  }catch(e){ console.warn('seed activity failed', e); }
 
-    // Compute the maximum spendable value (wei) such that value + gas <= balance
-    async function computeSpendableBNBWei(provider, presaleContract, address){
-      const bal = await provider.getBalance(address);
-      // Binary search between 0 and balance
-      let lo = ethers.constants.Zero;
-      let hi = bal;
-      for(let i=0;i<15;i++){
-        const mid = lo.add(hi).div(2);
-        const { gasCost } = await estimateBuyWithBnbCostWei(provider, presaleContract, mid);
-        const total = mid.add(gasCost);
-        if(total.lte(bal)){
-          lo = mid; // can afford more
-        }else{
-          hi = mid; // too high
-        }
-      }
-      // Tiny safety margin so we don't hit "exactly on the edge"
-      const safety = ethers.BigNumber.from("10000"); // 10k wei
-      return lo.gt(safety) ? lo.sub(safety) : ethers.constants.Zero;
+  // Live updates (only if wallet connected to speed up block fetch)
+  if(walletProvider && presale){
+    try{
+      presale.on('BoughtWithBNB', async (buyer, usdtWei, amountALTRU, paidBNB, ev)=>{
+        const blk=await walletProvider.getBlock(ev.blockNumber);
+        activity.unshift({
+          kind:'BNB', time:(blk.timestamp||0)*1000, buyer:String(buyer),
+          altru:+ethers.utils.formatUnits(amountALTRU, altruDecimals),
+          bnb:(+ethers.utils.formatUnits(paidBNB,18)).toFixed(5)
+        });
+        renderActivity(); await refreshStats();
+      });
+      presale.on('BoughtWithUSDT', async (buyer, usdtWei, amountALTRU, ev)=>{
+        const blk=await walletProvider.getBlock(ev.blockNumber);
+        activity.unshift({
+          kind:'USDT', time:(blk.timestamp||0)*1000, buyer:String(buyer),
+          altru:+ethers.utils.formatUnits(amountALTRU, altruDecimals),
+          usdt:(+ethers.utils.formatUnits(usdtWei,18)).toFixed(2)
+        });
+        renderActivity(); await refreshStats();
+      });
+    }catch(e){ console.warn('event attach failed', e); }
+  }
+
+  // Wallet changes → reload
+  if(window.ethereum){
+    window.ethereum.on('accountsChanged', ()=>location.reload());
+    window.ethereum.on('chainChanged',   ()=>location.reload());
+  }
+
+  // ====== BUY: helpers ======
+  const parseFloatSafe = (v)=>{ const n = Number(v); return isFinite(n)?n:0; };
+
+  // Safer max BNB: subtract gas buffer so user keeps dust for future txs
+  $('maxBNB')?.addEventListener('click', async ()=>{
+    if(!walletProvider||!signer) return setEr('Connect wallet to use this.');
+    try{
+      const bal = await walletProvider.getBalance(await signer.getAddress());
+      const buffer = ethers.utils.parseEther("0.0007"); // slightly higher buffer
+      const spend = bal.gt(buffer)? bal.sub(buffer): ethers.constants.Zero;
+      $('bnbAmount').value = ethers.utils.formatEther(spend);
+      setOk('Max BNB filled (minus gas buffer).');
+    }catch(e){ setEr(e.message || 'Failed to read BNB balance'); }
+  });
+
+  // Gas pre-check for buyWithBNB (prevents "insufficient funds for gas * price + value")
+  async function estimateBuyWithBnbCostWei(provider, contract, valueWei){
+    // NOTE: gasPrice can vary; we add a small multiplier for safety
+    const gasPrice = await provider.getGasPrice();
+    let gasLimit;
+    try{
+      gasLimit = await contract.estimateGas.buyWithBNB({ value: valueWei });
+    }catch{
+      // fallback estimate if node refuses estimation (use a safe ceiling)
+      gasLimit = ethers.BigNumber.from(180000);
     }
+    const gasCost = gasPrice.mul(gasLimit);
+    return { gasPrice, gasLimit, gasCost };
+  }
 
-    // Max BNB (gas-aware)
-    document.getElementById('maxBNB')?.addEventListener('click', async ()=>{
-      if(!walletProvider||!signer||!presale) return setEr('Connect your wallet on BSC to use Max BNB.');
-      try{
-        const addr = await signer.getAddress();
-        const spendWei = await computeSpendableBNBWei(walletProvider, presale, addr);
-        if(spendWei.isZero()){
-          document.getElementById('bnbAmount').value = '';
-          return setWarn('Not enough BNB to cover gas. Please add funds.');
-        }
-        // Round to 6 decimals for a clean input value
-        const spend = Number(ethers.utils.formatEther(spendWei));
-        const rounded = Math.max(0, Math.floor(spend * 1e6) / 1e6);
-        document.getElementById('bnbAmount').value = rounded.toString();
-        setOk('Filled with the maximum spendable BNB (gas included).');
-      }catch(e){
-        console.error(e);
-        setEr(e?.message || 'Failed to compute max spendable BNB.');
+  // BUY with BNB (with gas check)
+  $('buyBNB')?.addEventListener('click', async ()=>{
+    if(!presale||!signer||!walletProvider) return setEr('Connect wallet on BSC to buy.');
+    const netNow = await walletProvider.getNetwork();
+    if(Number(netNow.chainId)!==56) return setEr('Wrong network. Please switch to BSC.');
+
+    try{
+      const val = parseFloatSafe($('bnbAmount')?.value || '0');
+      if(!val || val<=0) return setEr('Enter BNB amount');
+
+      const valueWei = ethers.utils.parseEther(String(val));
+      const addr     = await signer.getAddress();
+      const balWei   = await walletProvider.getBalance(addr);
+
+      // Estimate gas cost for this exact value
+      const { gasCost } = await estimateBuyWithBnbCostWei(walletProvider, presale, valueWei);
+      const needWei  = valueWei.add(gasCost);
+
+      if(needWei.gt(balWei)){
+        const have = Number(ethers.utils.formatEther(balWei));
+        const need = Number(ethers.utils.formatEther(needWei));
+        return setEr(`Insufficient BNB: you have ${have.toFixed(6)}, need ≈${need.toFixed(6)} (value + gas). Reduce amount or top up.`);
       }
-    });
 
-    // Buy with BNB (gas-aware check)
-    document.getElementById('buyBNB')?.addEventListener('click', async ()=>{
-      // Ensure presale, signer and provider are available
-      if(!presale||!signer||!walletProvider) return setEr('Connect your wallet on BSC to buy.');
+      const tx = await presale.buyWithBNB({ value: valueWei });
+      setOk('Transaction sent…');
+      await tx.wait();
+      setOk('Success: bought with BNB');
+      await refreshStats();
+    }catch(e){
+      console.error(e);
+      if(e?.code===4001) return setEr('Transaction was rejected by the user.');
+      setEr(e?.data?.message || e?.message || 'BNB transaction failed');
+    }
+  });
 
-      // Ensure we are on BSC
-      const netNow = await walletProvider.getNetwork();
-      if(Number(netNow.chainId)!==56) return setEr('Wrong network. Please switch to BSC.');
+  // USDT max
+  $('maxUSDT')?.addEventListener('click', async ()=>{
+    if(!usdt||!signer) return setEr('Connect wallet to use this.');
+    try{
+      const dec = await usdt.decimals(); // USDT on BSC is 18
+      const bal = await usdt.balanceOf(await signer.getAddress());
+      $('usdtAmount').value = ethers.utils.formatUnits(bal, dec);
+      setOk('Max USDT filled.');
+    }catch(e){ setEr(e.message || 'Failed to read USDT balance'); }
+  });
 
-      try{
-        // Read and validate user input
-        const valStr = document.getElementById('bnbAmount')?.value || '0';
-        const val = Number(valStr);
-        if(!val || val<=0) return setEr('Enter the amount in BNB.');
+  // BUY with USDT (by USDT amount)
+  $('buyUSDT_amount')?.addEventListener('click', async ()=>{
+    if(!usdt||!presale||!signer||!walletProvider) return setEr('Connect wallet on BSC to buy.');
+    const netNow = await walletProvider.getNetwork();
+    if(Number(netNow.chainId)!==56) return setEr('Wrong network. Please switch to BSC.');
+    try{
+      const dec = await usdt.decimals();
+      const amt = parseFloatSafe($('usdtAmount')?.value || '0');
+      if(!amt || amt<=0) return setEr('Enter USDT amount');
+      const usdtWei = ethers.utils.parseUnits(String(amt), dec);
 
-        // Convert to wei
-        const valueWei = ethers.utils.parseEther(String(val));
-
-        // Check user balance and compute needed gas
-        const addr   = await signer.getAddress();
-        const balWei = await walletProvider.getBalance(addr);
-
-        const { gasCost } = await estimateBuyWithBnbCostWei(walletProvider, presale, valueWei);
-        const needWei = valueWei.add(gasCost);
-
-        // If balance < value + gas, show a clear error with numbers
-        if(needWei.gt(balWei)){
-          const have = Number(ethers.utils.formatEther(balWei));
-          const need = Number(ethers.utils.formatEther(needWei));
-          return setEr(`Not enough BNB: you have ${have.toFixed(6)}, need ~${need.toFixed(6)} (value + gas). Reduce the amount or add funds.`);
-        }
-
-        // Send transaction
-        const tx = await presale.buyWithBNB({ value: valueWei });
-        setOk('Transaction sent…');
-
-        // Wait for confirmation
-        await tx.wait();
-        setOk('Successfully purchased with BNB.');
-        await refreshStats();
-      }catch(e){
-        console.error(e);
-        if(e?.code===4001) return setEr('Transaction rejected by user.');
-        setEr(e?.data?.message || e.message || 'BNB transaction failed.');
+      const owner = await signer.getAddress();
+      const allowance = await usdt.allowance(owner, PRESALE_ADDRESS);
+      if(allowance.lt(usdtWei)){
+        const txA = await usdt.approve(PRESALE_ADDRESS, usdtWei);
+        setOk('Approving…');
+        await txA.wait();
       }
-    });
+      const tx = await presale.buyWithUSDT(usdtWei);
+      setOk('Sending transaction…');
+      await tx.wait();
+      setOk(`Success: bought with ${amt} USDT`);
+      await refreshStats();
+    }catch(e){ console.error(e); setEr(e?.data?.message || e.message || 'USDT transaction failed'); }
+  });
 
-    // USDT max + buys
-    document.getElementById('maxUSDT')?.addEventListener('click', async ()=>{
-      if(!usdt||!signer) return setEr('Connect wallet to use this.');
-      try{
-        const dec = await usdt.decimals(); // 18 on BSC
-        const bal = await usdt.balanceOf(await signer.getAddress());
-        document.getElementById('usdtAmount').value = fmtUnits(bal, dec);
-        setOk('Max USDT filled.');
-      }catch(e){ setEr(e.message || 'Failed to read USDT balance'); }
-    });
+  // BUY with USDT (by target ALTRU amount)
+  $('buyUSDT_altru')?.addEventListener('click', async ()=>{
+    if(!usdt||!presale||!signer||!walletProvider) return setEr('Connect wallet on BSC to buy.');
+    const netNow = await walletProvider.getNetwork();
+    if(Number(netNow.chainId)!==56) return setEr('Wrong network. Please switch to BSC.');
+    try{
+      const a = parseFloatSafe($('altruAmount')?.value || '0');
+      if(!a || a<=0) return setEr('Enter ALTRU amount');
 
-    document.getElementById('buyUSDT_amount')?.addEventListener('click', async ()=>{
-      if(!usdt||!presale||!signer||!walletProvider) return setEr('Connect wallet on BSC to buy.');
-      const netNow = await walletProvider.getNetwork();
-      if(Number(netNow.chainId)!==56) return setEr('Wrong network. Please switch to BSC.');
-      try{
-        const dec = await usdt.decimals();
-        const amt = parseFloatSafe(document.getElementById('usdtAmount')?.value || '0');
-        if(!amt || amt<=0) return setEr('Enter USDT amount');
-        const usdtWei = ethers.utils.parseUnits(String(amt), dec);
+      const altruWei = ethers.utils.parseUnits(String(a), altruDecimals);
+      // Use latest RATE from presale (units: ALTRU per 1 USDT unit)
+      const rateBN   = await presaleRead.rateUSDT();
+      // ceil division to avoid underpay
+      const usdtWei  = altruWei.add(rateBN.sub(1)).div(rateBN);
 
-        const owner = await signer.getAddress();
-        const allowance = await usdt.allowance(owner, PRESALE_ADDRESS);
-        if(allowance.lt(usdtWei)){
-          const txA = await usdt.approve(PRESALE_ADDRESS, usdtWei);
-          setOk('Approving…');
-          await txA.wait();
-        }
-        const tx = await presale.buyWithUSDT(usdtWei);
-        setOk('Sending transaction…');
-        await tx.wait();
-        setOk(`Success: bought with ${amt} USDT`);
-        await refreshStats();
-      }catch(e){ console.error(e); setEr(e?.data?.message || e.message || 'USDT transaction failed'); }
-    });
+      const owner = await signer.getAddress();
+      const allowance = await usdt.allowance(owner, PRESALE_ADDRESS);
+      if(allowance.lt(usdtWei)){
+        const txA = await usdt.approve(PRESALE_ADDRESS, usdtWei);
+        setOk('Approving…');
+        await txA.wait();
+      }
+      const tx = await presale.buyWithUSDT(usdtWei);
+      setOk('Sending transaction…');
+      await tx.wait();
+      setOk(`Success: bought ${a} ALTRU`);
+      await refreshStats();
+    }catch(e){ console.error(e); setEr(e?.data?.message || e.message || 'USDT transaction failed'); }
+  });
 
-    document.getElementById('buyUSDT_altru')?.addEventListener('click', async ()=>{
-      if(!usdt||!presale||!signer||!walletProvider) return setEr('Connect wallet on BSC to buy.');
-      const netNow = await walletProvider.getNetwork();
-      if(Number(netNow.chainId)!==56) return setEr('Wrong network. Please switch to BSC.');
-      try{
-        const a = parseFloatSafe(document.getElementById('altruAmount')?.value || '0');
-        if(!a || a<=0) return setEr('Enter ALTRU amount');
-
-        const altruWei = ethers.utils.parseUnits(String(a), 18);
-        const rateBN   = await presaleRead.rateUSDT();
-        const usdtWei  = altruWei.add(rateBN.sub(1)).div(rateBN); // ceil
-
-        const owner = await signer.getAddress();
-        const allowance = await usdt.allowance(owner, PRESALE_ADDRESS);
-        if(allowance.lt(usdtWei)){
-          const txA = await usdt.approve(PRESALE_ADDRESS, usdtWei);
-          setOk('Approving…');
-          await txA.wait();
-        }
-        const tx = await presale.buyWithUSDT(usdtWei);
-        setOk('Sending transaction…');
-        await tx.wait();
-        setOk(`Success: bought ${a} ALTRU`);
-        await refreshStats();
-      }catch(e){ console.error(e); setEr(e?.data?.message || e.message || 'USDT transaction failed'); }
-    });
-
-  })();
-  </script>
+})();
+</script>
 </body>
 </html>
